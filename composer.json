@@ -1,0 +1,26 @@
+{
+    "name": "ame180/discord-ranked-system",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ame"
+        }
+    ],
+    "require-dev": {
+        "larapack/dd": "^1.1"
+    },
+    "require": {
+        "doctrine/orm": "^2.11.0",
+        "doctrine/dbal": "^3.2",
+        "symfony/cache": "^5.4",
+        "guzzlehttp/guzzle": "^7.5",
+        "nesbot/carbon": "^2.62",
+        "doctrine/annotations": "^1.13"
+    }
+}
