@@ -4,9 +4,12 @@ namespace App\Repository;
 
 use App\Entity\Player;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 class PlayerRepository extends EntityRepository
 {
@@ -28,5 +31,21 @@ class PlayerRepository extends EntityRepository
 			->setParameter('monthAgo', Carbon::now()->subMonth())
 			->getQuery()
 			->getResult();
+	}
+
+	/**
+	 * @throws NonUniqueResultException
+	 * @throws NoResultException
+	 */
+	public function getLastPlayerSnapshotUpdate(): ?CarbonInterface
+	{
+		$qb = $this->createQueryBuilder('p');
+		$result = $qb
+			->select('MAX(s.createdAt)')
+			->leftJoin('p.snapshots', 's')
+			->getQuery()
+			->getSingleScalarResult();
+
+		return $result ? new Carbon($result) : null;
 	}
 }

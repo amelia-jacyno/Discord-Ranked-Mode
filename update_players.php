@@ -3,11 +3,20 @@
 require_once __DIR__ . '/bootstrap.php';
 
 use App\Entity;
+use App\Repository\PlayerRepository;
 use App\Service\EntityManagerProvider;
 use App\Service\PlayerFetcher;
+use Carbon\Carbon;
 
 $entityManager = EntityManagerProvider::getEntityManager();
+/** @var PlayerRepository $playerRepository */
 $playerRepository = $entityManager->getRepository(Entity\Player::class);
+$lastUpdate = $playerRepository->getLastPlayerSnapshotUpdate();
+if (isset($lastUpdate) && $lastUpdate->diffInHours(Carbon::now()) < 12)
+{
+	echo 'Players already updated less than 12 hours ago.' . PHP_EOL;
+	exit;
+}
 $playersData = PlayerFetcher::fetchPlayers();
 foreach ($playersData as $playerData)
 {
@@ -28,3 +37,4 @@ foreach ($playersData as $playerData)
 	$player->addSnapshot($snapshot);
 }
 $entityManager->flush();
+echo 'Players updated successfully.' . PHP_EOL;
