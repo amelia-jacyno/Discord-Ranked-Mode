@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../bootstrap.php';
+
+const AVAILABLE_COMMANDS = [
+	'get_player_ranks',
+	'update_players',
+];
+
+if (count($argv) < 2 || !in_array($argv[1], AVAILABLE_COMMANDS)) {
+    echo 'Usage: ' . $argv[0] . ' <command>' . PHP_EOL;
+    echo 'Available commands:' . PHP_EOL;
+    foreach (AVAILABLE_COMMANDS as $command) {
+        echo ' > ' . $command . PHP_EOL;
+    }
+
+    exit(1);
+}
+
+$command = $argv[1];
+$commandFile = __ROOT__ . '/cli/' . $command . '.php';
+
+require_once $commandFile;
