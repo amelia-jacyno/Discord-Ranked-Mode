@@ -35,7 +35,7 @@ class EntityManagerProvider
 	{
 		return [
 			'driver' => 'pdo_sqlite',
-			'path' => __ROOT__ . '/db.sqlite',
+			'path' => __ROOT__ . '/' . $_ENV['DB_PATH'],
 		];
 	}
 }

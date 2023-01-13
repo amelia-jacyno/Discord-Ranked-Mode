@@ -21,6 +21,7 @@
         "symfony/cache": "^5.4",
         "guzzlehttp/guzzle": "^7.5",
         "nesbot/carbon": "^2.62",
-        "doctrine/annotations": "^1.13"
+        "doctrine/annotations": "^1.13",
+        "vlucas/phpdotenv": "^5.5"
     }
 }
