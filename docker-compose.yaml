@@ -8,5 +8,6 @@ services:
     working_dir: /var/www/app
     environment:
       APACHE_DOCUMENT_ROOT: /var/www/app/public
+    entrypoint: infrastructure/entrypoint.sh
     ports:
-      - "80:80"
+      - "8080:80"

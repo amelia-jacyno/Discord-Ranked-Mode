@@ -1,0 +1,1 @@
+*/15 * * * * /usr/local/bin/php /var/www/app/bin/drm update_players >> /var/log/cron.log 2>&1
