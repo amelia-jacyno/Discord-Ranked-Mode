@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 
-class PlayerRepository extends EntityRepository
+final class PlayerRepository extends EntityRepository
 {
     public function __construct(EntityManagerInterface $em)
     {

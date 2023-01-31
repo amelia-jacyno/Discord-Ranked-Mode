@@ -7,9 +7,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\ORMSetup;
 
-class EntityManagerProvider
+final class EntityManagerProvider
 {
-    protected static EntityManager $entityManager;
+    private static EntityManager $entityManager;
 
     /**
      * @throws ORMException
@@ -23,7 +23,7 @@ class EntityManagerProvider
         return self::$entityManager;
     }
 
-    protected static function getConfig(): Configuration
+    private static function getConfig(): Configuration
     {
         return ORMSetup::createAttributeMetadataConfiguration(
             paths: [__ROOT__ . '/src/Entity'],
@@ -31,7 +31,7 @@ class EntityManagerProvider
         );
     }
 
-    protected static function getConnection(): array
+    private static function getConnection(): array
     {
         return [
             'driver' => 'pdo_sqlite',

@@ -6,11 +6,11 @@ use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use Carbon\Carbon;
 
-class S3BackupManager
+final class S3BackupManager
 {
-    protected S3Client $client;
+    private S3Client $client;
 
-    protected string $bucket;
+    private string $bucket;
 
     public function __construct()
     {

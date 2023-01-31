@@ -5,10 +5,8 @@ namespace App\Service;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-class PlayerFetcher
+final class PlayerFetcher
 {
-    protected const LEADERBOARD_URL = 'https://mee6.xyz/api/plugins/levels/leaderboard/364447643394506772';
-
     /**
      * @throws GuzzleException
      */
