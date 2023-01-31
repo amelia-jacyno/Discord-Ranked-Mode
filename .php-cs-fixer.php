@@ -2,6 +2,9 @@
 
 $rules = [
 	'@Symfony' => true,
+	'concat_space' => [
+		'spacing' => 'one'
+	],
 ];
 $finder = PhpCsFixer\Finder::create()
 	->in(['bin', 'cli', 'src', 'public']);

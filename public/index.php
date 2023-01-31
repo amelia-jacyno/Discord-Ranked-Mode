@@ -28,10 +28,10 @@ $ranks = PlayerRanksResolver::resolvePlayerRanks($players);
 <body>
 <div class="container py-3">
 	<?php
-	$index = 1;
-	foreach ($ranks as $rank => $players) {
-		?>
-        <h3 class="text-center"><?= $rank ?></h3>
+    $index = 1;
+foreach ($ranks as $rank => $players) {
+    ?>
+        <h3 class="text-center"><?php echo $rank; ?></h3>
         <table class="table table-hover table-fixed mb-4" style="table-layout: fixed">
             <thead>
             <tr>
@@ -41,21 +41,21 @@ $ranks = PlayerRanksResolver::resolvePlayerRanks($players);
             </thead>
             <tbody>
 			<?php
-			foreach ($players as $player) {
-				echo "
+        foreach ($players as $player) {
+            echo "
                         <tr>
                             <td colspan='1'>$index</td>
                             <td colspan='3'>{$player->getUsername()}</td>
                         </tr>
                         ";
-				$index++;
-			}
-			?>
+            ++$index;
+        }
+    ?>
             </tbody>
         </table>
 		<?php
-	}
-	?>
+}
+?>
 </div>
 </body>
 </html>

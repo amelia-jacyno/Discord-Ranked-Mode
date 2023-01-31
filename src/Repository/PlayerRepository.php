@@ -13,39 +13,40 @@ use Doctrine\ORM\NoResultException;
 
 class PlayerRepository extends EntityRepository
 {
-	public function __construct(EntityManagerInterface $em)
-	{
-		parent::__construct($em, new ClassMetadata(Player::class));
-	}
+    public function __construct(EntityManagerInterface $em)
+    {
+        parent::__construct($em, new ClassMetadata(Player::class));
+    }
 
-	/**
-	 * @return Player[]
-	 */
-	public function getPlayersWithAMonthOfSnapshots(): array
-	{
-		$qb = $this->createQueryBuilder('p');
-		return $qb
-			->addSelect('s')
-			->leftJoin('p.snapshots', 's', 'WITH', 's.createdAt >= :monthAgo')
-			->orderBy('s.createdAt', 'DESC')
-			->setParameter('monthAgo', Carbon::now()->subMonth())
-			->getQuery()
-			->getResult();
-	}
+    /**
+     * @return Player[]
+     */
+    public function getPlayersWithAMonthOfSnapshots(): array
+    {
+        $qb = $this->createQueryBuilder('p');
 
-	/**
-	 * @throws NonUniqueResultException
-	 * @throws NoResultException
-	 */
-	public function getLastPlayerSnapshotUpdate(): ?CarbonInterface
-	{
-		$qb = $this->createQueryBuilder('p');
-		$result = $qb
-			->select('MAX(s.createdAt)')
-			->leftJoin('p.snapshots', 's')
-			->getQuery()
-			->getSingleScalarResult();
+        return $qb
+            ->addSelect('s')
+            ->leftJoin('p.snapshots', 's', 'WITH', 's.createdAt >= :monthAgo')
+            ->orderBy('s.createdAt', 'DESC')
+            ->setParameter('monthAgo', Carbon::now()->subMonth())
+            ->getQuery()
+            ->getResult();
+    }
 
-		return $result ? new Carbon($result) : null;
-	}
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function getLastPlayerSnapshotUpdate(): ?CarbonInterface
+    {
+        $qb = $this->createQueryBuilder('p');
+        $result = $qb
+            ->select('MAX(s.createdAt)')
+            ->leftJoin('p.snapshots', 's')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $result ? new Carbon($result) : null;
+    }
 }
