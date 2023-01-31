@@ -13,7 +13,8 @@
         }
     ],
     "require-dev": {
-        "larapack/dd": "^1.1"
+        "larapack/dd": "^1.1",
+        "friendsofphp/php-cs-fixer": "^3.14"
     },
     "require": {
         "doctrine/orm": "^2.11.0",

@@ -1,6 +1,7 @@
 .idea
 .env
 db.sqlite*
+.php-cs-fixer.cache
 
 vendor/
 log/
