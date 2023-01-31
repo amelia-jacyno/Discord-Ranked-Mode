@@ -6,6 +6,7 @@ require_once __DIR__ . '/../bootstrap.php';
 const AVAILABLE_COMMANDS = [
 	'get_player_ranks',
 	'update_players',
+    'create_backup',
 ];
 
 if (count($argv) < 2 || !in_array($argv[1], AVAILABLE_COMMANDS)) {
