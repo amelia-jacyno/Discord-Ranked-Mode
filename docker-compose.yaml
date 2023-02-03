@@ -6,8 +6,7 @@ services:
     volumes:
       - .:/var/www/app
     working_dir: /var/www/app
-    environment:
-      APP_PATH: /var/www/app
+    env_file: .env
     entrypoint: infrastructure/entrypoint.sh
     ports:
       - "8080:80"
