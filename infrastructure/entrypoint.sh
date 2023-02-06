@@ -1,6 +1,6 @@
 #!/bin/bash
 
-envsubst < /etc/cron.d/crontab.tpl > /etc/cron.d/crontab
+envsubst < infrastructure/crontab.tpl > /etc/cron.d/crontab
 rm /etc/cron.d/crontab.tpl
 chmod 644 /etc/cron.d/crontab
 touch log/cron.log
