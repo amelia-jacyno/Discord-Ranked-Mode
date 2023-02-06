@@ -17,6 +17,10 @@ final class S3BackupManager
         $this->client = new S3Client([
             'region' => $_ENV['DB_BACKUP_AWS_S3_REGION'],
             'version' => $_ENV['DB_BACKUP_AWS_S3_VERSION'],
+			'credentials' => [
+				'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
+				'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+			],
         ]);
         $this->bucket = $_ENV['DB_BACKUP_AWS_S3_BUCKET'];
     }
