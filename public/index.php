@@ -1,6 +1,7 @@
 <?php
 require_once '../bootstrap.php';
 
+use App\DTO\PlayerRankInfo;
 use App\Repository\PlayerRepository;
 use App\Service\EntityManagerProvider;
 use App\Service\PlayerRanksResolver;
@@ -9,7 +10,12 @@ $entityManager = EntityManagerProvider::getEntityManager();
 $playerRepository = new PlayerRepository($entityManager);
 $players = $playerRepository->getPlayersWithAMonthOfSnapshots();
 
-$ranks = PlayerRanksResolver::resolvePlayerRanks($players);
+$playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($players);
+/** @var array<string, array<PlayerRankInfo>> $ranks */
+$ranks = [];
+foreach ($playerRankInfos as $playerRankInfo) {
+	$ranks[$playerRankInfo->rank][] = $playerRankInfo;
+}
 ?>
 
 <html lang="en">
@@ -45,7 +51,7 @@ foreach ($ranks as $rank => $players) {
             echo "
                         <tr>
                             <td colspan='1'>$index</td>
-                            <td colspan='3'>{$player->getUsername()}</td>
+                            <td colspan='3'>{$player->username}</td>
                         </tr>
                         ";
             ++$index;

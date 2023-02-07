@@ -2,12 +2,13 @@
 
 namespace App\Service;
 
+use App\DTO\PlayerRankInfo;
 use App\Entity\Player;
 use Carbon\Carbon;
 
 final class PlayerRanksResolver
 {
-    private static array $ranks = [
+    private static array $rankNames = [
         0 => 'Master',
         1 => 'Diamond',
         2 => 'Platinum',
@@ -28,26 +29,31 @@ final class PlayerRanksResolver
     /**
      * @param Player[] $players
      *
-     * @return array<string, Player[]>
+     * @return array<PlayerRankInfo>
      */
     public static function resolvePlayerRanks(array $players): array
     {
         $players = self::sortEligiblePlayersByDailyXp($players);
         $playerCount = count($players);
-        $ranks = [];
-        foreach (self::$ranks as $rank) {
-            $ranks[$rank] = [];
-        }
 
+		$playerRankInfos = [];
         $offset = 0;
-        foreach (self::$standardRankDistribution as $rank => $distribution) {
+        foreach (self::$standardRankDistribution as $rankId => $distribution) {
             $currentRankPlayerCount = (int) round($distribution * $playerCount);
             $currentRankPlayers = array_slice($players, $offset, $currentRankPlayerCount);
-            $ranks[self::$ranks[$rank]] = $currentRankPlayers;
+			foreach ($currentRankPlayers as $player) {
+				$playerRankInfos[] = new PlayerRankInfo(
+					$player->getId(),
+					$player->getUsername(),
+					$player->getExternalId(),
+					self::$rankNames[$rankId]
+				);
+			}
+
             $offset += $currentRankPlayerCount;
         }
 
-        return $ranks;
+        return $playerRankInfos;
     }
 
     /**
