@@ -43,15 +43,18 @@ foreach ($ranks as $rank => $players) {
             <tr>
                 <th scope="col" colspan="1">#</th>
                 <th scope="col" colspan="3">Name</th>
+                <th scope="col" colspan="1">Daily XP</th>
             </tr>
             </thead>
             <tbody>
 			<?php
         foreach ($players as $player) {
+            $dailyXp = round($player->dailyXp, 1);
             echo "
                         <tr>
                             <td colspan='1'>$index</td>
-                            <td colspan='3'>{$player->username}</td>
+                            <td colspan='3'>$player->username</td>
+                            <td colspan='1'>$dailyXp XP</td>
                         </tr>
                         ";
             ++$index;

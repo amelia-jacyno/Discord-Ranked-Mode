@@ -46,7 +46,8 @@ final class PlayerRanksResolver
 					$player->getId(),
 					$player->getUsername(),
 					$player->getExternalId(),
-					self::$rankNames[$rankId]
+					self::$rankNames[$rankId],
+					self::calculateDailyXp($player)
 				);
 			}
 

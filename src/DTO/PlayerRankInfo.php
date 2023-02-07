@@ -8,7 +8,8 @@ class PlayerRankInfo
 		public int $id,
 		public string $username,
 		public string $externalId,
-		public string $rank
+		public string $rank,
+		public float $dailyXp,
 	) {
 	}
 }

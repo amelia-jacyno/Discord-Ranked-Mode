@@ -20,7 +20,7 @@ foreach ($playerRankInfos as $playerRankInfo) {
 foreach ($ranks as $rank => $players) {
     echo $rank . ' (' . count($players) . ')' . PHP_EOL;
     foreach ($players as $player) {
-        echo '  ' . $player->username . PHP_EOL;
+        echo '  ' . $player->username . ': ' . round($player->dailyXp, 1) . 'xp' . PHP_EOL;
     }
     echo PHP_EOL;
 }
