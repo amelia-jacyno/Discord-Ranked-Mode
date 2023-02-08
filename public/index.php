@@ -1,7 +1,7 @@
 <?php
 require_once '../bootstrap.php';
 
-use App\DTO\PlayerRankInfo;
+use App\DTO;
 use App\Repository\PlayerRepository;
 use App\Service\EntityManagerProvider;
 use App\Service\PlayerRanksResolver;
@@ -11,7 +11,7 @@ $playerRepository = new PlayerRepository($entityManager);
 $players = $playerRepository->getPlayersWithAMonthOfSnapshots();
 
 $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($players);
-/** @var array<string, array<PlayerRankInfo>> $ranks */
+/** @var array<string, array<DTO\PlayerRankInfo>> $ranks */
 $ranks = [];
 foreach ($playerRankInfos as $playerRankInfo) {
 	$ranks[$playerRankInfo->rank->getName()][] = $playerRankInfo;

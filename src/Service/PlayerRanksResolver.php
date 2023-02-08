@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\DTO\PlayerRankInfo;
+use App\DTO;
 use App\Entity\Player;
 use App\Enum;
 use Carbon\Carbon;
@@ -30,7 +30,7 @@ final class PlayerRanksResolver
     /**
      * @param Player[] $players
      *
-     * @return array<PlayerRankInfo>
+     * @return array<DTO\PlayerRankInfo>
      */
     public static function resolvePlayerRanks(array $players): array
     {
@@ -43,7 +43,7 @@ final class PlayerRanksResolver
             $currentRankPlayerCount = (int) round($distribution * $playerCount);
             $currentRankPlayers = array_slice($players, $offset, $currentRankPlayerCount);
 			foreach ($currentRankPlayers as $player) {
-				$playerRankInfos[] = new PlayerRankInfo(
+				$playerRankInfos[] = new DTO\PlayerRankInfo(
 					$player->getId(),
 					$player->getUsername(),
 					$player->getExternalId(),
