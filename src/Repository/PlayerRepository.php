@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Player;
+use App\Entity;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,11 +15,11 @@ final class PlayerRepository extends EntityRepository
 {
     public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($em, new ClassMetadata(Player::class));
+        parent::__construct($em, new ClassMetadata(Entity\Player::class));
     }
 
     /**
-     * @return Player[]
+     * @return Entity\Player[]
      */
     public function getPlayersWithAMonthOfSnapshots(): array
     {

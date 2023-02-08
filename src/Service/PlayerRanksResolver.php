@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\DTO;
-use App\Entity\Player;
+use App\Entity;
 use App\Enum;
 use Carbon\Carbon;
 
@@ -28,9 +28,9 @@ final class PlayerRanksResolver
     ];
 
     /**
-     * @param Player[] $players
+     * @param Entity\Player[] $players
      *
-     * @return array<DTO\PlayerRankInfo>
+     * @return DTO\PlayerRankInfo[]
      */
     public static function resolvePlayerRanks(array $players): array
     {
@@ -59,14 +59,14 @@ final class PlayerRanksResolver
     }
 
     /**
-     * @param Player[] $players
+     * @param Entity\Player[] $players
      *
-     * @return Player[]
+     * @return Entity\Player[]
      */
     private static function sortEligiblePlayersByDailyXp(array $players): array
     {
         // Filter out players with less than 7 days of snapshots and latest snapshot older than 3 days
-        $players = array_filter($players, function (Player $player) {
+        $players = array_filter($players, function (Entity\Player $player) {
             if ($player->getSnapshots()->count() < 2) {
                 return false;
             }
@@ -88,7 +88,7 @@ final class PlayerRanksResolver
             return true;
         });
 
-        usort($players, function (Player $a, Player $b) {
+        usort($players, function (Entity\Player $a, Entity\Player $b) {
             $aDailyXp = self::calculateDailyXp($a);
             $bDailyXp = self::calculateDailyXp($b);
 
@@ -98,7 +98,7 @@ final class PlayerRanksResolver
         return $players;
     }
 
-    private static function calculateDailyXp(Player $player): float
+    private static function calculateDailyXp(Entity\Player $player): float
     {
         $snapshots = $player->getSnapshots();
         $oldestSnapshot = $snapshots->last();
