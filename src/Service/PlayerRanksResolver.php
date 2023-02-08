@@ -4,17 +4,18 @@ namespace App\Service;
 
 use App\DTO\PlayerRankInfo;
 use App\Entity\Player;
+use App\Enum;
 use Carbon\Carbon;
 
 final class PlayerRanksResolver
 {
-    private static array $rankNames = [
-        0 => 'Master',
-        1 => 'Diamond',
-        2 => 'Platinum',
-        3 => 'Gold',
-        4 => 'Silver',
-        5 => 'Bronze',
+    private static array $ranks = [
+        0 => Enum\Rank::Master,
+		1 => Enum\Rank::Diamond,
+		2 => Enum\Rank::Platinum,
+		3 => Enum\Rank::Gold,
+		4 => Enum\Rank::Silver,
+		5 => Enum\Rank::Bronze,
     ];
 
     private static array $standardRankDistribution = [
@@ -46,7 +47,7 @@ final class PlayerRanksResolver
 					$player->getId(),
 					$player->getUsername(),
 					$player->getExternalId(),
-					self::$rankNames[$rankId],
+					self::$ranks[$rankId],
 					self::calculateDailyXp($player)
 				);
 			}
