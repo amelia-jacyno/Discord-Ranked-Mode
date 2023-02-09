@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -29,7 +28,7 @@ class PlayerSnapshot
     private ?int $messageCount;
 
     #[ORM\Column(name: 'created_at', type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private DateTimeInterface $createdAt;
+    private CarbonInterface $createdAt;
 
     public function __construct()
     {
@@ -79,7 +78,7 @@ class PlayerSnapshot
 
     public function getCreatedAt(): CarbonInterface
     {
-        return new Carbon($this->createdAt);
+        return $this->createdAt;
     }
 
     public function getMessageCount(): ?int
