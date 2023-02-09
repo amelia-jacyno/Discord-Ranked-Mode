@@ -19,6 +19,7 @@
     "require": {
         "doctrine/orm": "^2.11.0",
         "doctrine/dbal": "^3.2",
+        "doctrine/collections": "^2.1",
         "symfony/cache": "^5.4",
         "guzzlehttp/guzzle": "^7.5",
         "nesbot/carbon": "^2.62",
