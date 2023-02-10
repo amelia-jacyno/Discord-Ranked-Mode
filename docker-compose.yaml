@@ -9,4 +9,4 @@ services:
     env_file: .env
     entrypoint: infrastructure/entrypoint.sh
     ports:
-      - "8080:80"
+      - ${APP_PORT}:80
