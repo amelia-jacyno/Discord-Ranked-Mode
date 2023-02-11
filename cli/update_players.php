@@ -4,7 +4,7 @@ require_once __DIR__ . '/../bootstrap.php';
 
 use App\Entity;
 use App\Repository\PlayerRepository;
-use App\Service\EntityManagerProvider;
+use App\Service\Doctrine\EntityManagerProvider;
 use App\Service\PlayerFetcher;
 use Carbon\Carbon;
 

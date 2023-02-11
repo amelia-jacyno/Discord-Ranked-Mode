@@ -3,7 +3,7 @@ require_once '../bootstrap.php';
 
 use App\DTO;
 use App\Repository\PlayerRepository;
-use App\Service\EntityManagerProvider;
+use App\Service\Doctrine\EntityManagerProvider;
 use App\Service\PlayerRanksResolver;
 
 $entityManager = EntityManagerProvider::getEntityManager();
