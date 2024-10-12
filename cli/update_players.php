@@ -19,7 +19,6 @@ if (isset($lastUpdate) && $lastUpdate->diffInHours(Carbon::now()) < 12) {
 $playersData = PlayerFetcher::fetchPlayers();
 foreach ($playersData as $playerData) {
     $player = $playerRepository->findOneBy(['externalId' => $playerData['id']]);
-    echo json_encode($playerData) . PHP_EOL;
 
     if (null === $player) {
         $player = (new Entity\Player())
