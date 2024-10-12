@@ -19,13 +19,17 @@ if (isset($lastUpdate) && $lastUpdate->diffInHours(Carbon::now()) < 12) {
 $playersData = PlayerFetcher::fetchPlayers();
 foreach ($playersData as $playerData) {
     $player = $playerRepository->findOneBy(['externalId' => $playerData['id']]);
+    echo json_encode($playerData) . PHP_EOL;
 
     if (null === $player) {
         $player = (new Entity\Player())
-            ->setExternalId($playerData['id'])
-            ->setUsername($playerData['username']);
+            ->setExternalId($playerData['id']);
         $entityManager->persist($player);
     }
+
+    $player
+        ->setUsername($playerData['username'])
+        ->setAvatar($playerData['avatar']);
 
     $snapshot = (new Entity\PlayerSnapshot())
         ->setLevel($playerData['level'])
