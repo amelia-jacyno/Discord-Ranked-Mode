@@ -7,6 +7,11 @@ require __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+$twigLoader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/src/View');
+$twig = new \Twig\Environment($twigLoader, [
+    'cache' => __DIR__ . '/cache/twig',
+]);
+
 Doctrine\DBAL\Types\Type::overrideType('datetime_immutable', \Carbon\Doctrine\CarbonImmutableType::class);
 Doctrine\DBAL\Types\Type::overrideType('datetime', \Carbon\Doctrine\CarbonType::class);
 

@@ -26,6 +26,7 @@
         "doctrine/annotations": "^1.13",
         "vlucas/phpdotenv": "^5.5",
         "aws/aws-sdk-php": "^3.257",
-        "doctrine/migrations": "^3.5"
+        "doctrine/migrations": "^3.5",
+        "twig/twig": "^3.0"
     }
 }
