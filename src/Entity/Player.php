@@ -28,6 +28,9 @@ class Player implements JsonSerializable
     /** @var Collection<int, PlayerSnapshot> $snapshots */
     private Collection $snapshots;
 
+    #[ORM\Column(name: 'avatar', type: 'string', nullable: true)]
+    private ?string $avatar;
+
     public function __construct()
     {
         $this->snapshots = new ArrayCollection();
@@ -73,6 +76,18 @@ class Player implements JsonSerializable
     public function addSnapshot(PlayerSnapshot $snapshot): self
     {
         $this->snapshots[] = $snapshot;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }
