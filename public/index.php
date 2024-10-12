@@ -29,6 +29,15 @@ foreach ($playerRankInfos as $playerRankInfo) {
             crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"
             integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <style>
+        .img-profile {
+            height: 3.5rem;
+            width: 3.5rem;
+            margin-right: 1rem;
+            padding: 3px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
     <title>Discord Ranked Mode</title>
 </head>
 <body>
@@ -42,7 +51,7 @@ foreach ($ranks as $rank => $players) {
             <thead>
             <tr>
                 <th scope="col" colspan="1">#</th>
-                <th scope="col" colspan="3">Name</th>
+                <th scope="col" colspan="3">User</th>
                 <th scope="col" colspan="1">Daily XP</th>
             </tr>
             </thead>
@@ -52,9 +61,12 @@ foreach ($ranks as $rank => $players) {
             $dailyXp = round($player->dailyXp, 1);
             echo "
                         <tr>
-                            <td colspan='1'>$index</td>
-                            <td colspan='3'>$player->username</td>
-                            <td colspan='1'>$dailyXp XP</td>
+                            <td colspan='1' class='align-middle'>$index</td>
+                            <td colspan='3' class='text-truncate'>
+                                <img src='$player->avatarUrl' class='img-profile rounded-circle' alt='$player->username-picture mr-2'>
+                                $player->username
+                            </td>
+                            <td colspan='1' class='align-middle'>$dailyXp XP</td>
                         </tr>
                         ";
             ++$index;
