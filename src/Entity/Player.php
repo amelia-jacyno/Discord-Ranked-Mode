@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PlayerRepository;
+use App\Service\DiscordAvatarUrlResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,6 +26,7 @@ class Player implements JsonSerializable
     private string $externalId;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerSnapshot::class, cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'ASC'])]
     /** @var Collection<int, PlayerSnapshot> $snapshots */
     private Collection $snapshots;
 
@@ -90,6 +92,11 @@ class Player implements JsonSerializable
         $this->avatar = $avatar;
 
         return $this;
+    }
+
+    public function getAvatarUrl(): string
+    {
+        return DiscordAvatarUrlResolver::resolveAvatarUrl($this->externalId, $this->avatar);
     }
 
     public function jsonSerialize(): array

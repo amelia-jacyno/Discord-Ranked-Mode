@@ -45,7 +45,7 @@ final class PlayerRanksResolver
 			foreach ($currentRankPlayers as $player) {
 				$playerRankInfos[] = new DTO\PlayerRankInfo(
 					$player->getId(),
-                    DiscordAvatarUrlResolver::resolveAvatarUrl($player->getExternalId(), $player->getAvatar()),
+                    $player->getAvatarUrl(),
 					$player->getUsername(),
 					$player->getExternalId(),
 					self::$ranks[$rankId],
