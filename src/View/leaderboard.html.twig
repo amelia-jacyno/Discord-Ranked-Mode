@@ -22,42 +22,39 @@
 </head>
 <body>
 <div class="container py-3">
-    {% set index = 1 %}
-    {% for rank, players in leaderboard %}
-        <h3 class="text-center">{{ rank }}</h3>
-        <table class="table table-hover table-fixed mb-4" style="table-layout: fixed">
-            <thead>
+    <h3 class="text-center">Leaderboard</h3>
+    <table class="table table-hover table-fixed mb-4" style="table-layout: fixed">
+        <thead>
+        <tr>
+            <th scope="col" colspan="1">#</th>
+            <th scope="col" colspan="3">User</th>
+            <th scope="col" colspan="1">Daily XP</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set index = 1 %}
+        {% for player in players %}
             <tr>
-                <th scope="col" colspan="1">#</th>
-                <th scope="col" colspan="3">User</th>
-                <th scope="col" colspan="1">Daily XP</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for player in players %}
-                {% set dailyXp = player.dailyXp|round(1) %}
-                <tr>
-                    <td colspan="1" class="align-middle">{{ index }}</td>
-                    <td colspan="3" class="text-truncate">
-                        <a
-                                href="player.php?id={{ player.id }}"
-                                class="text-reset text-decoration-none"
+                <td colspan="1" class="align-middle">{{ index }}</td>
+                <td colspan="3" class="text-truncate">
+                    <a
+                            href="player.php?id={{ player.id }}"
+                            class="text-reset text-decoration-none"
+                    >
+                        <img
+                                src="{{ player.avatarUrl }}"
+                                class="img-profile rounded-circle"
+                                alt="{{ player.username }}-picture mr-2"
                         >
-                            <img
-                                    src="{{ player.avatarUrl }}"
-                                    class="img-profile rounded-circle"
-                                    alt="{{ player.username }}-picture mr-2"
-                            >
-                            {{ player.username }}
-                        </a>
-                    </td>
-                    <td colspan="1" class="align-middle">{{ dailyXp }} XP</td>
-                </tr>
-                {% set index = index + 1 %}
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endfor %}
+                        {{ player.username }}
+                    </a>
+                </td>
+                <td colspan="1" class="align-middle">{{ player.xp }} XP</td>
+            </tr>
+            {% set index = index + 1 %}
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

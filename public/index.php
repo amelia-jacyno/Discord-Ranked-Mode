@@ -17,6 +17,6 @@ foreach ($playerRankInfos as $playerRankInfo) {
 	$ranks[$playerRankInfo->rank->getName()][] = $playerRankInfo;
 }
 
-echo $twig->render('leaderboard.html.twig', [
+echo $twig->render('ranks.html.twig', [
     'leaderboard' => $ranks,
 ]);
