@@ -99,6 +99,11 @@ class Player implements JsonSerializable
         return DiscordAvatarUrlResolver::resolveAvatarUrl($this->externalId, $this->avatar);
     }
 
+    public function getXp(): int
+    {
+        return $this->snapshots->last()->getXp();
+    }
+
     public function jsonSerialize(): array
     {
         return [
