@@ -1,0 +1,16 @@
+services:
+  app:
+    image: ghcr.io/ame180/drm-app:latest
+    build:
+      context: .
+      dockerfile: infrastructure/Dockerfile
+      target: prod
+    volumes:
+      - ./db.sqlite:/app/db.sqlite
+    env_file: .env
+    entrypoint: infrastructure/entrypoint.sh
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=${APP_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
