@@ -1,16 +1,13 @@
 <?php
 require_once '../bootstrap.php';
 
-use App\Entity\Player;
-use App\Repository\PlayerRepository;
-use App\Service\Doctrine\EntityManagerProvider;
+use App\DTO\ExternalPlayer;
+use App\Service\LeaderboardProvider\LeaderboardProviderResolver;
 
-$entityManager = EntityManagerProvider::getEntityManager();
-$playerRepository = new PlayerRepository($entityManager);
-$players = $playerRepository->getPlayersWithAMonthOfSnapshots();
-usort($players, fn (Player $p1, Player $p2) => $p2->getXp() <=> $p1->getXp());
-$players = array_slice($players, 0, 100);
+$externalPlayers = LeaderboardProviderResolver::resolveProvider($_ENV['LEADERBOARD_PROVIDER'] ?? 'mee6')::fetchPlayers();
+usort($externalPlayers, fn (ExternalPlayer $p1, ExternalPlayer $p2) => $p2->xp <=> $p1->xp);
+$externalPlayers = array_slice($externalPlayers, 0, 100);
 
 echo $twig->render('leaderboard.html.twig', [
-    'players' => $players,
+    'externalPlayers' => $externalPlayers,
 ]);

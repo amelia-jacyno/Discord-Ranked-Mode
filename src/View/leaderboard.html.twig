@@ -34,23 +34,23 @@
         </thead>
         <tbody>
         {% set index = 1 %}
-        {% for player in players %}
+        {% for externalPlayer in externalPlayers %}
             <tr>
                 <td colspan="1" class="align-middle">{{ index }}</td>
                 <td colspan="3" class="text-truncate">
                     <a
-                            href="player.php?id={{ player.id }}"
+                            href="player.php?id={{ externalPlayer.id }}"
                             class="text-reset text-decoration-none"
                     >
                         <img
-                                src="{{ player.avatar }}"
+                                src="{{ externalPlayer.avatarUrl }}"
                                 class="img-profile rounded-circle"
-                                alt="{{ player.username }}-picture mr-2"
+                                alt="{{ externalPlayer.username }}-picture mr-2"
                         >
-                        {{ player.username }}
+                        {{ externalPlayer.username }}
                     </a>
                 </td>
-                <td colspan="1" class="align-middle">{{ player.xp }} XP</td>
+                <td colspan="1" class="align-middle">{{ externalPlayer.xp }} XP</td>
             </tr>
             {% set index = index + 1 %}
         {% endfor %}
