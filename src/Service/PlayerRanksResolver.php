@@ -45,7 +45,7 @@ final class PlayerRanksResolver
 			foreach ($currentRankPlayers as $player) {
 				$playerRankInfos[] = new DTO\PlayerRankInfo(
 					$player->getId(),
-                    $player->getAvatarUrl(),
+                    $player->getAvatar(),
 					$player->getUsername(),
 					$player->getExternalId(),
 					self::$ranks[$rankId],

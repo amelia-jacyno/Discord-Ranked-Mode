@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
+use App\Helper\DiscordAvatarHelper;
 use App\Repository\PlayerRepository;
-use App\Service\DiscordAvatarUrlResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -82,11 +82,6 @@ class Player implements JsonSerializable
         return $this;
     }
 
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
     public function setAvatar(?string $avatar): self
     {
         $this->avatar = $avatar;
@@ -94,14 +89,18 @@ class Player implements JsonSerializable
         return $this;
     }
 
-    public function getAvatarUrl(): string
+    public function getAvatar(): string
     {
-        return DiscordAvatarUrlResolver::resolveAvatarUrl($this->externalId, $this->avatar);
+        if (filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+            return $this->avatar;
+        }
+
+        return DiscordAvatarHelper::resolveAvatarUrl($this->externalId, $this->avatar);
     }
 
     public function getXp(): int
     {
-        return $this->snapshots->last()->getXp();
+        return $this->snapshots->last() ? $this->snapshots->last()->getXp() : 0;
     }
 
     public function jsonSerialize(): array

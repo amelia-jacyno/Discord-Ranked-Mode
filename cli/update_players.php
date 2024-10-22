@@ -5,35 +5,50 @@ require_once __DIR__ . '/../bootstrap.php';
 use App\Entity;
 use App\Repository\PlayerRepository;
 use App\Service\Doctrine\EntityManagerProvider;
-use App\Service\PlayerFetcher;
+use App\Service\LeaderboardProvider\LeaderboardProviderResolver;
 use Carbon\Carbon;
+
+// Check for 2nd argument to be 'force' to force update
+$force = false;
+if ($argc > 2 ) {
+    if ($argv[2] !== 'force') {
+        echo 'Invalid argument.' . PHP_EOL;
+        exit;
+    }
+
+    $force = true;
+}
 
 $entityManager = EntityManagerProvider::getEntityManager();
 /** @var PlayerRepository $playerRepository */
 $playerRepository = $entityManager->getRepository(Entity\Player::class);
-$lastUpdate = $playerRepository->getLastPlayerSnapshotUpdate();
-if (isset($lastUpdate) && $lastUpdate->diffInHours(Carbon::now()) < 12) {
-    echo 'Players already updated less than 12 hours ago.' . PHP_EOL;
-    exit;
+if (!$force) {
+    $lastUpdate = $playerRepository->getLastPlayerSnapshotUpdate();
+    if (isset($lastUpdate) && $lastUpdate->diffInHours(Carbon::now()) < 12) {
+        echo 'Players already updated less than 12 hours ago.' . PHP_EOL;
+        exit;
+    }
 }
-$playersData = PlayerFetcher::fetchPlayers();
-foreach ($playersData as $playerData) {
-    $player = $playerRepository->findOneBy(['externalId' => $playerData['id']]);
+
+$externalPlayers = LeaderboardProviderResolver::resolveProvider($_ENV['LEADERBOARD_PROVIDER'] ?? 'mee6')::fetchPlayers();
+
+foreach ($externalPlayers as $playerData) {
+    $player = $playerRepository->findOneBy(['externalId' => $playerData->id]);
 
     if (null === $player) {
         $player = (new Entity\Player())
-            ->setExternalId($playerData['id']);
+            ->setExternalId($playerData->id);
         $entityManager->persist($player);
     }
 
     $player
-        ->setUsername($playerData['username'])
-        ->setAvatar($playerData['avatar']);
+        ->setUsername($playerData->username)
+        ->setAvatar($playerData->avatarUrl);
 
     $snapshot = (new Entity\PlayerSnapshot())
-        ->setLevel($playerData['level'])
-        ->setXp($playerData['xp'])
-        ->setMessageCount($playerData['message_count'])
+        ->setLevel($playerData->level)
+        ->setXp($playerData->xp)
+        ->setMessageCount($playerData->messageCount ?? 0)
         ->setPlayer($player);
     $player->addSnapshot($snapshot);
 }

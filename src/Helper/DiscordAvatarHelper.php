@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Service;
+namespace App\Helper;
 
-final class DiscordAvatarUrlResolver
+final class DiscordAvatarHelper
 {
     public static function resolveAvatarUrl(string $externalId, ?string $avatar): string
     {
