@@ -6,7 +6,8 @@ class LeaderboardProviderResolver
 {
     protected static array $providers = [
         Mee6LeaderboardProvider::class,
-        AmeBotLeaderboardProvider::class
+        AmeBotLeaderboardProvider::class,
+        ArcaneLeaderboardProvider::class
     ];
 
     /**
