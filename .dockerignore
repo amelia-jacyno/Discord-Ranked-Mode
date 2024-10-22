@@ -1,0 +1,18 @@
+# Project files
+.git
+.idea
+
+# Volume files
+.env*
+db.sqlite*
+
+# Unnecessary files
+.php-cs-fixer.php
+.gitignore
+.dockerignore
+compose*.yaml
+scripts
+
+cache
+vendor
+log/*.log
