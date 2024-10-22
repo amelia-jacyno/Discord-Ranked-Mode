@@ -13,4 +13,4 @@ services:
       - 80
     environment:
       - VIRTUAL_HOST=${APP_HOST}
-      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${APP_HOST}
