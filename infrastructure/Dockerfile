@@ -9,7 +9,7 @@ RUN sed -ri -e 's!/var/www/html!/app/public!g' /etc/apache2/sites-available/*.co
 RUN sed -ri -e 's!/var/www/!/app/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Install dependencies
-RUN apt-get update && apt-get -y install cron gettext-base moreutils && apt-get clean
+RUN apt-get update && apt-get -y install cron gettext-base moreutils zip && apt-get clean
 
 # Configure Cron
 COPY ./infrastructure/crontab /etc/cron.d/crontab
