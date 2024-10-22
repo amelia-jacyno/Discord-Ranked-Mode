@@ -23,8 +23,8 @@ final class AmeBotLeaderboardProvider implements LeaderboardProvider
         foreach ($decoded as $player) {
             $externalPlayers[] = new ExternalPlayer(
                 $player['id'],
-                $player['User']['username'],
-                $player['User']['avatar'],
+                $player['username'],
+                $player['avatarUrl'],
                 $player['level'],
                 $player['xp'],
                 null,
