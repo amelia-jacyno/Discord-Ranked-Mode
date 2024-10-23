@@ -11,11 +11,11 @@ final class PlayerRanksResolver
 {
     private static array $ranks = [
         0 => Enum\Rank::Master,
-		1 => Enum\Rank::Diamond,
-		2 => Enum\Rank::Platinum,
-		3 => Enum\Rank::Gold,
-		4 => Enum\Rank::Silver,
-		5 => Enum\Rank::Bronze,
+        1 => Enum\Rank::Diamond,
+        2 => Enum\Rank::Platinum,
+        3 => Enum\Rank::Gold,
+        4 => Enum\Rank::Silver,
+        5 => Enum\Rank::Bronze,
     ];
 
     private static array $standardRankDistribution = [
@@ -37,21 +37,21 @@ final class PlayerRanksResolver
         $players = self::sortEligiblePlayersByDailyXp($players);
         $playerCount = count($players);
 
-		$playerRankInfos = [];
+        $playerRankInfos = [];
         $offset = 0;
         foreach (self::$standardRankDistribution as $rankId => $distribution) {
             $currentRankPlayerCount = (int) round($distribution * $playerCount);
             $currentRankPlayers = array_slice($players, $offset, $currentRankPlayerCount);
-			foreach ($currentRankPlayers as $player) {
-				$playerRankInfos[] = new DTO\PlayerRankInfo(
-					$player->getId(),
+            foreach ($currentRankPlayers as $player) {
+                $playerRankInfos[] = new DTO\PlayerRankInfo(
+                    $player->getId(),
                     $player->getAvatar(),
-					$player->getUsername(),
-					$player->getExternalId(),
-					self::$ranks[$rankId],
-					self::calculateDailyXp($player)
-				);
-			}
+                    $player->getUsername(),
+                    $player->getExternalId(),
+                    self::$ranks[$rankId],
+                    self::calculateDailyXp($player)
+                );
+            }
 
             $offset += $currentRankPlayerCount;
         }

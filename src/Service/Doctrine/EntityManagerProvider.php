@@ -11,16 +11,16 @@ final class EntityManagerProvider
 {
     private static EntityManager $entityManager;
 
-	/**
-	 * @throws MissingMappingDriverImplementation
-	 * @throws Exception
-	 */
-	public static function getEntityManager(): EntityManagerInterface
+    /**
+     * @throws MissingMappingDriverImplementation
+     * @throws Exception
+     */
+    public static function getEntityManager(): EntityManagerInterface
     {
         if (!isset(self::$entityManager)) {
             self::$entityManager = new EntityManager(
-				DBALConnectionProvider::getConnection(),
-				ORMConfigurationProvider::getConfiguration());
+                DBALConnectionProvider::getConnection(),
+                ORMConfigurationProvider::getConfiguration());
         }
 
         return self::$entityManager;

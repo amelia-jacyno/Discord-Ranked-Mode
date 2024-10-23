@@ -7,12 +7,11 @@ use App\Repository\PlayerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[ORM\Table(name: 'players')]
 #[ORM\Index(fields: ['externalId'], name: 'external_id_idx')]
-class Player implements JsonSerializable
+class Player implements \JsonSerializable
 {
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: 'integer')]
@@ -27,7 +26,7 @@ class Player implements JsonSerializable
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerSnapshot::class, cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'ASC'])]
-    /** @var Collection<int, PlayerSnapshot> $snapshots */
+    /** @var Collection<int, PlayerSnapshot> */
     private Collection $snapshots;
 
     #[ORM\Column(name: 'avatar', type: 'string', nullable: true)]

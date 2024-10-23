@@ -10,8 +10,8 @@ use Carbon\Carbon;
 
 // Check for 2nd argument to be 'force' to force update
 $force = false;
-if ($argc > 2 ) {
-    if ($argv[2] !== 'force') {
+if ($argc > 2) {
+    if ('force' !== $argv[2]) {
         echo 'Invalid argument.' . PHP_EOL;
         exit;
     }

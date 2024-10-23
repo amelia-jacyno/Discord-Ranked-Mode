@@ -1,8 +1,8 @@
 <?php
 
+use App\Entity;
 use App\Repository\PlayerRepository;
 use App\Service\Doctrine\EntityManagerProvider;
-use App\Entity;
 use Carbon\Carbon;
 
 require_once '../bootstrap.php';
@@ -12,7 +12,7 @@ $playerRepository = new PlayerRepository($entityManager);
 
 $playerId = $_GET['id'] ?? null;
 
-if ($playerId === null) {
+if (null === $playerId) {
     header('Location: /');
     exit;
 }
@@ -20,7 +20,7 @@ if ($playerId === null) {
 /** @var Entity\Player $player */
 $player = $playerRepository->find($playerId);
 
-if ($player === null) {
+if (null === $player) {
     header('Location: /');
     exit;
 }
@@ -31,19 +31,16 @@ $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) {
 });
 
 $snapshotDays = [];
-foreach ($playerSnapshots as $snapshot)
-{
+foreach ($playerSnapshots as $snapshot) {
     $snapshotDays[$snapshot->getCreatedAt()->format('Y-m-d')] = $snapshot;
 }
 
 $xpData = [];
 $chartDay = Carbon::now()->subDays(7);
 $previousXp = null;
-while ($chartDay->isBefore(Carbon::now()))
-{
+while ($chartDay->isBefore(Carbon::now())) {
     $snapshot = $snapshotDays[$chartDay->format('Y-m-d')] ?? null;
-    if (null === $snapshot)
-    {
+    if (null === $snapshot) {
         $xpData[] = [
             'date' => $chartDay->format('Y-m-d'),
             'xp' => null,
@@ -53,8 +50,7 @@ while ($chartDay->isBefore(Carbon::now()))
         continue;
     }
 
-    if (null === $previousXp)
-    {
+    if (null === $previousXp) {
         $previousXp = $snapshot->getXp();
 
         continue;

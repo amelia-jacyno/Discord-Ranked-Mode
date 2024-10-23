@@ -14,7 +14,7 @@ $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($players);
 /** @var array<string, array<DTO\PlayerRankInfo>> $ranks */
 $ranks = [];
 foreach ($playerRankInfos as $playerRankInfo) {
-	$ranks[$playerRankInfo->rank->getName()][] = $playerRankInfo;
+    $ranks[$playerRankInfo->rank->getName()][] = $playerRankInfo;
 }
 
 foreach ($ranks as $rank => $players) {

@@ -3,7 +3,6 @@
 namespace App\Service\LeaderboardProvider;
 
 use App\DTO\ExternalPlayer;
-use App\Helper\DiscordAvatarHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 

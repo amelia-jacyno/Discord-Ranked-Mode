@@ -1,4 +1,5 @@
 <?php
+
 require_once '../bootstrap.php';
 
 use App\DTO\ExternalPlayer;
@@ -10,7 +11,7 @@ $externalPlayers = array_slice($externalPlayers, 0, 100);
 
 $hasMessageCounts = false;
 foreach ($externalPlayers as $externalPlayer) {
-    if ($externalPlayer->messageCount !== null) {
+    if (null !== $externalPlayer->messageCount) {
         $hasMessageCounts = true;
         break;
     }

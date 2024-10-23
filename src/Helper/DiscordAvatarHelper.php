@@ -6,7 +6,7 @@ final class DiscordAvatarHelper
 {
     public static function resolveAvatarUrl(string $externalId, ?string $avatar): string
     {
-        if ($avatar === null) {
+        if (null === $avatar) {
             return 'https://cdn.discordapp.com/embed/avatars/0.png';
         }
 

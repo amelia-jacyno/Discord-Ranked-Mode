@@ -6,13 +6,13 @@ use App\Enum;
 
 class PlayerRankInfo
 {
-	public function __construct(
-		public int $id,
+    public function __construct(
+        public int $id,
         public ?string $avatarUrl,
-		public string $username,
-		public string $externalId,
-		public Enum\Rank $rank,
-		public float $dailyXp,
-	) {
-	}
+        public string $username,
+        public string $externalId,
+        public Enum\Rank $rank,
+        public float $dailyXp,
+    ) {
+    }
 }

@@ -8,11 +8,11 @@ use Carbon\Carbon;
 
 final class S3BackupManager
 {
-	public const BACKUP_FAILED = 0;
+    public const BACKUP_FAILED = 0;
 
-	public const BACKUP_EXISTS = 1;
+    public const BACKUP_EXISTS = 1;
 
-	public const BACKUP_CREATED = 2;
+    public const BACKUP_CREATED = 2;
 
     private S3Client $client;
 
@@ -23,10 +23,10 @@ final class S3BackupManager
         $this->client = new S3Client([
             'region' => $_ENV['DB_BACKUP_AWS_S3_REGION'],
             'version' => $_ENV['DB_BACKUP_AWS_S3_VERSION'],
-			'credentials' => [
-				'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
-				'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
-			],
+            'credentials' => [
+                'key' => $_ENV['AWS_ACCESS_KEY_ID'],
+                'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+            ],
         ]);
         $this->bucket = $_ENV['DB_BACKUP_AWS_S3_BUCKET'];
     }

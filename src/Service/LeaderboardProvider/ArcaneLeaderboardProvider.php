@@ -23,7 +23,7 @@ final class ArcaneLeaderboardProvider implements LeaderboardProvider
             ],
             'headers' => [
                 'Authorization' => $_ENV['LEADERBOARD_AUTH'],
-            ]
+            ],
         ]);
         $decoded = json_decode($response->getBody()->getContents(), true);
         $externalPlayers = [];
@@ -43,7 +43,7 @@ final class ArcaneLeaderboardProvider implements LeaderboardProvider
 
     protected static function calculateTotalXp(int $level, int $xp): int
     {
-        for ($i = 0; $i < $level; $i++) {
+        for ($i = 0; $i < $level; ++$i) {
             $xp += 75 + $i * 100;
         }
 
