@@ -6,7 +6,6 @@ services:
       dockerfile: infrastructure/Dockerfile-prod
       target: prod
     volumes:
-      - ./db.sqlite:/app/db.sqlite
       - ./.env:/app/.env
     env_file: .env
     entrypoint: ./entrypoint.sh
