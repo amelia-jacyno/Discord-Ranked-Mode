@@ -3,13 +3,13 @@ services:
     image: ghcr.io/ame180/drm-app:latest
     build:
       context: .
-      dockerfile: infrastructure/Dockerfile
+      dockerfile: infrastructure/Dockerfile-prod
       target: prod
     volumes:
       - ./db.sqlite:/app/db.sqlite
       - ./.env:/app/.env
     env_file: .env
-    entrypoint: infrastructure/entrypoint.sh
+    entrypoint: ./entrypoint.sh
     expose:
       - 80
     environment:

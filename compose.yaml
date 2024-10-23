@@ -2,11 +2,11 @@ services:
   app:
     build:
       context: .
-      dockerfile: infrastructure/Dockerfile
+      dockerfile: infrastructure/Dockerfile-prod
       target: dev
     volumes:
       - .:/app
     env_file: .env
-    entrypoint: infrastructure/entrypoint.sh
+    entrypoint: infrastructure/entrypoint-prod.sh
     ports:
       - ${APP_PORT}:80
