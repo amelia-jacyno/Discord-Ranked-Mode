@@ -18,12 +18,13 @@ final class InitialMigration extends AbstractMigration
         );");
 
         $this->execute("CREATE TABLE player_snapshots (
-            id INT AUTO_INCREMENT NOT NULL, 
+            id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, 
             player_id INT DEFAULT NULL, 
             xp INT NOT NULL, 
             level INT NOT NULL, 
             message_count INT DEFAULT NULL, 
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, INDEX IDX_ED9D730499E6F5DF (player_id), PRIMARY KEY(id),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, 
+            INDEX player_id_idx (player_id),
             CONSTRAINT player_id_fk FOREIGN KEY (player_id) REFERENCES players (id)
         );");
     }
