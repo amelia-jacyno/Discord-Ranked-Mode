@@ -10,3 +10,21 @@ services:
     entrypoint: infrastructure/entrypoint-prod.sh
     ports:
       - ${APP_PORT}:80
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: ghcr.io/ame180/mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  mysql:

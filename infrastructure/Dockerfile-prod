@@ -3,6 +3,9 @@ FROM php:8.1-apache AS base
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql
+
 # Configure Apache
 RUN sed -ri -e 's!/var/www/html!/app/public!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!/app/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf

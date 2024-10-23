@@ -27,7 +27,7 @@ class PlayerSnapshot
     #[ORM\Column(name: 'message_count', type: 'integer', nullable: true)]
     private ?int $messageCount;
 
-    #[ORM\Column(name: 'created_at', type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[ORM\Column(name: 'created_at', type: 'datetime', options: ['default' => 'NOW'])]
     private CarbonInterface $createdAt;
 
     public function __construct()

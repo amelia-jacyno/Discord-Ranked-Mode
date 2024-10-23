@@ -14,8 +14,11 @@ class DBALConnectionProvider
     public static function getConnection(): Connection
     {
         return DriverManager::getConnection([
-            'driver' => 'pdo_sqlite',
-            'path' => __ROOT__ . '/' . $_ENV['DB_PATH'],
+            'driver' => 'pdo_mysql',
+            'host' => 'mysql',
+            'dbname' => $_ENV['DB_DATABASE'],
+            'user' => $_ENV['DB_USER'],
+            'password' => $_ENV['DB_PASSWORD'],
         ]);
     }
 }
