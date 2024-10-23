@@ -27,7 +27,7 @@ final class AmeBotLeaderboardProvider implements LeaderboardProvider
                 $player['avatarUrl'],
                 $player['level'],
                 $player['xp'],
-                null,
+                $player['messageCount'],
             );
         }
 
