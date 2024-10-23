@@ -29,6 +29,7 @@
         <tr>
             <th scope="col" colspan="1">#</th>
             <th scope="col" colspan="3">User</th>
+            {% if hasMessageCounts %}<th scope="col" colspan="1">Messages</th>{% endif %}
             <th scope="col" colspan="1">Total XP</th>
         </tr>
         </thead>
@@ -38,18 +39,14 @@
             <tr>
                 <td colspan="1" class="align-middle">{{ index }}</td>
                 <td colspan="3" class="text-truncate">
-                    <a
-                            href="player.php?id={{ externalPlayer.id }}"
-                            class="text-reset text-decoration-none"
+                    <img
+                            src="{{ externalPlayer.avatarUrl }}"
+                            class="img-profile rounded-circle"
+                            alt="{{ externalPlayer.username }}-picture mr-2"
                     >
-                        <img
-                                src="{{ externalPlayer.avatarUrl }}"
-                                class="img-profile rounded-circle"
-                                alt="{{ externalPlayer.username }}-picture mr-2"
-                        >
-                        {{ externalPlayer.username }}
-                    </a>
+                    {{ externalPlayer.username }}
                 </td>
+                {% if hasMessageCounts %}<td colspan="1" class="align-middle">{{ externalPlayer.messageCount }}</td>{% endif %}
                 <td colspan="1" class="align-middle">{{ externalPlayer.xp }} XP</td>
             </tr>
             {% set index = index + 1 %}

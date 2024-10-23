@@ -8,6 +8,15 @@ $externalPlayers = LeaderboardProviderResolver::resolveProvider($_ENV['LEADERBOA
 usort($externalPlayers, fn (ExternalPlayer $p1, ExternalPlayer $p2) => $p2->xp <=> $p1->xp);
 $externalPlayers = array_slice($externalPlayers, 0, 100);
 
+$hasMessageCounts = false;
+foreach ($externalPlayers as $externalPlayer) {
+    if ($externalPlayer->messageCount !== null) {
+        $hasMessageCounts = true;
+        break;
+    }
+}
+
 echo $twig->render('leaderboard.html.twig', [
     'externalPlayers' => $externalPlayers,
+    'hasMessageCounts' => $hasMessageCounts,
 ]);
