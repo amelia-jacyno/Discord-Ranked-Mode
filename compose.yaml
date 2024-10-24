@@ -1,5 +1,5 @@
 services:
-  app:
+  php:
     build:
       context: .
       dockerfile: infrastructure/Dockerfile-prod
@@ -8,11 +8,20 @@ services:
       - .:/app
     env_file: .env
     entrypoint: infrastructure/entrypoint-prod.sh
-    ports:
-      - ${APP_PORT}:80
     depends_on:
       mysql:
         condition: service_healthy
+
+  nginx:
+    image: ghcr.io/ame180/nginx-php:latest
+    environment:
+      APP_PATH: /app
+    volumes:
+      - .:/app
+    ports:
+      - "80:80"
+    depends_on:
+      - php
 
   mysql:
     image: ghcr.io/ame180/mysql:latest

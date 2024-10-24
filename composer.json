@@ -17,18 +17,16 @@
         "friendsofphp/php-cs-fixer": "^3.14"
     },
     "require": {
-        "php": "8.1.*",
+        "php": "8.3.*",
         "ext-pdo_mysql": "*",
         "doctrine/orm": "^2.11.0",
         "doctrine/dbal": "^3.2",
         "doctrine/collections": "^2.1",
-        "symfony/cache": "^5.4",
         "guzzlehttp/guzzle": "^7.5",
         "nesbot/carbon": "^2.62",
         "doctrine/annotations": "^1.13",
         "vlucas/phpdotenv": "^5.5",
         "aws/aws-sdk-php": "^3.257",
-        "doctrine/migrations": "^3.5",
         "twig/twig": "^3.0",
         "robmorgan/phinx": "^0.16.5"
     }
