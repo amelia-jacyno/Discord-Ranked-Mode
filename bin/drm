@@ -1,25 +1,14 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__ . '/../bootstrap.php';
+use Symfony\Component\Console\Application;
 
-const AVAILABLE_COMMANDS = [
-	'get_player_ranks',
-	'update_players',
-    'create_backup',
-];
+require_once __DIR__ . '/../config/bootstrap.php';
+$container = require __ROOT__ . '/config/container.php';
 
-if (count($argv) < 2 || !in_array($argv[1], AVAILABLE_COMMANDS)) {
-    echo 'Usage: ' . $argv[0] . ' <command>' . PHP_EOL;
-    echo 'Available commands:' . PHP_EOL;
-    foreach (AVAILABLE_COMMANDS as $command) {
-        echo ' > ' . $command . PHP_EOL;
-    }
+$application = new Application('Discord Ranked Mode');
 
-    exit(1);
-}
+$application->add($container->get(\App\Command\GetPlayerRanks::class));
+$application->add($container->get(\App\Command\UpdatePlayers::class));
 
-$command = $argv[1];
-$commandFile = __ROOT__ . '/cli/' . $command . '.php';
-
-require_once $commandFile;
+$application->run();
