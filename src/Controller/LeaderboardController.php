@@ -22,7 +22,7 @@ final class LeaderboardController extends AbstractController
      */
     #[Route('/', name: 'home')]
     #[Route('/leaderboard', name: 'leaderboard')]
-    public static function leaderboard(): Response
+    public function leaderboard(): Response
     {
         $externalPlayers = LeaderboardProviderResolver::resolveProvider($_ENV['LEADERBOARD_PROVIDER'] ?? 'mee6')::fetchPlayers();
         usort($externalPlayers, fn (DTO\ExternalPlayer $p1, DTO\ExternalPlayer $p2) => $p2->xp <=> $p1->xp);
@@ -43,7 +43,7 @@ final class LeaderboardController extends AbstractController
     }
 
     #[Route('/ranks', name: 'ranks')]
-    public static function ranks(): Response
+    public function ranks(): Response
     {
         $entityManager = EntityManagerProvider::getEntityManager();
         $playerRepository = new PlayerRepository($entityManager);
@@ -66,7 +66,7 @@ final class LeaderboardController extends AbstractController
      * @throws Exception
      */
     #[Route('/player/{playerId}', name: 'player')]
-    public static function player(Request $request): Response
+    public function player(Request $request): Response
     {
 
         $entityManager = EntityManagerProvider::getEntityManager();
