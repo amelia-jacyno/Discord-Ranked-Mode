@@ -5,8 +5,6 @@ use App\Repository\PlayerRepository;
 use App\Service\Doctrine\EntityManagerProvider;
 use Carbon\Carbon;
 
-require_once '../bootstrap.php';
-
 $entityManager = EntityManagerProvider::getEntityManager();
 $playerRepository = new PlayerRepository($entityManager);
 

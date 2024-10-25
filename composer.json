@@ -28,6 +28,9 @@
         "vlucas/phpdotenv": "^5.5",
         "aws/aws-sdk-php": "^3.257",
         "twig/twig": "^3.0",
-        "robmorgan/phinx": "^0.16.5"
+        "robmorgan/phinx": "^0.16.5",
+        "symfony/routing": "^7.1",
+        "symfony/http-foundation": "^7.1",
+        "symfony/cache": "^7.1"
     }
 }

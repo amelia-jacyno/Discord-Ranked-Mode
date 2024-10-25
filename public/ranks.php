@@ -1,7 +1,5 @@
 <?php
 
-require_once '../bootstrap.php';
-
 use App\DTO;
 use App\Repository\PlayerRepository;
 use App\Service\Doctrine\EntityManagerProvider;

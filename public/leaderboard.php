@@ -1,7 +1,5 @@
 <?php
 
-require_once '../bootstrap.php';
-
 use App\DTO\ExternalPlayer;
 use App\Service\LeaderboardProvider\LeaderboardProviderResolver;
 
