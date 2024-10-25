@@ -16,7 +16,7 @@ $routes->add('leaderboard', new Route('/leaderboard', [
 $routes->add('ranks', new Route('/ranks', [
     '_controller' => fn (Request $request) => render_template($request),
 ]));
-$routes->add('player', new Route('/player', [
+$routes->add('player', new Route('/player/{playerId}', [
     '_controller' => fn (Request $request) => render_template($request),
 ]));
 

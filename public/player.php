@@ -8,7 +8,7 @@ use Carbon\Carbon;
 $entityManager = EntityManagerProvider::getEntityManager();
 $playerRepository = new PlayerRepository($entityManager);
 
-$playerId = $_GET['id'] ?? null;
+$playerId = $request->get('playerId');
 
 if (null === $playerId) {
     header('Location: /');
