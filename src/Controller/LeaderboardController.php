@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Entity;
 use App\DTO;
 use App\Repository\PlayerRepository;
-use App\Service\Doctrine\EntityManagerProvider;
 use App\Service\LeaderboardProvider\LeaderboardProviderResolver;
 use App\Service\PlayerRanksResolver;
 use Carbon\Carbon;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\MissingMappingDriverImplementation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +17,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class LeaderboardController extends AbstractController
 {
+    public function __construct(
+        private readonly PlayerRepository $playerRepository,
+    ) {
+    }
+
     /**
      * @throws \Exception
      */
@@ -45,9 +50,7 @@ final class LeaderboardController extends AbstractController
     #[Route('/ranks', name: 'ranks')]
     public function ranks(): Response
     {
-        $entityManager = EntityManagerProvider::getEntityManager();
-        $playerRepository = new PlayerRepository($entityManager);
-        $players = $playerRepository->getPlayersWithAMonthOfSnapshots();
+        $players = $this->playerRepository->getPlayersWithAMonthOfSnapshots();
 
         $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($players);
         /** @var array<string, array<DTO\PlayerRankInfo>> $ranks */
@@ -69,9 +72,6 @@ final class LeaderboardController extends AbstractController
     public function player(Request $request): Response
     {
 
-        $entityManager = EntityManagerProvider::getEntityManager();
-        $playerRepository = new PlayerRepository($entityManager);
-
         $playerId = $request->get('playerId');
 
         if (null === $playerId) {
@@ -80,7 +80,7 @@ final class LeaderboardController extends AbstractController
         }
 
         /** @var Entity\Player $player */
-        $player = $playerRepository->find($playerId);
+        $player = $this->playerRepository->find($playerId);
 
         if (null === $player) {
             header('Location: /');
