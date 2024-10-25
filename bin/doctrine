@@ -1,12 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-use App\Service\Doctrine\EntityManagerProvider;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 
-require __DIR__ . '/../bootstrap.php';
+require_once __DIR__ . '/../config/bootstrap.php';
+$container = require __ROOT__ . '/config/container.php';
 
 ConsoleRunner::run(
-	new SingleManagerProvider(EntityManagerProvider::getEntityManager())
+	new SingleManagerProvider($container->get(EntityManagerInterface::class))
 );
