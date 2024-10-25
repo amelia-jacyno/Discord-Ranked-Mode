@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use HaydenPierce\ClassFinder\ClassFinder;
 use Symfony\Component\Console\Application;
 
 require_once __DIR__ . '/../config/bootstrap.php';
@@ -8,7 +9,9 @@ $container = require __ROOT__ . '/config/container.php';
 
 $application = new Application('Discord Ranked Mode');
 
-$application->add($container->get(\App\Command\GetPlayerRanks::class));
-$application->add($container->get(\App\Command\UpdatePlayers::class));
+$commands = ClassFinder::getClassesInNamespace('App\Command');
+foreach ($commands as $command) {
+    $application->add($container->get($command));
+}
 
 $application->run();
