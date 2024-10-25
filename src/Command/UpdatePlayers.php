@@ -36,7 +36,8 @@ final class UpdatePlayers extends Command
 
         if (!$force) {
             $lastUpdate = $this->playerRepository->getLastPlayerSnapshotUpdate();
-            if (isset($lastUpdate) && $lastUpdate->diffInHours(Carbon::now()) < 12) {
+            // Leave a small margin for inconsistencies in cron timings and command execution
+            if (isset($lastUpdate) && $lastUpdate->floatDiffInHours(Carbon::now()) < 11.9) {
                 $output->writeln('Players already updated less than 12 hours ago.');
                 return Command::SUCCESS;
             }
