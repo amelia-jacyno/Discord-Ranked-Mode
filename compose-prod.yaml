@@ -7,7 +7,7 @@ services:
       target: prod
     volumes:
       - ./.env:/app/.env
-      - /app/public
+      - assets:/app/public
     env_file: .env
     entrypoint: ./entrypoint.sh
     depends_on:
@@ -21,7 +21,7 @@ services:
       VIRTUAL_HOST: ${APP_HOST}
       LETSENCRYPT_HOST: ${APP_HOST}
     volumes:
-      - /app/public
+      - assets:/app/public
     expose:
       - 80
     depends_on:
@@ -41,3 +41,4 @@ services:
 
 volumes:
   mysql:
+  assets:
