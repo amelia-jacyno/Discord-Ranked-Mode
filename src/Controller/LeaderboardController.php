@@ -13,11 +13,12 @@ use Doctrine\ORM\Exception\MissingMappingDriverImplementation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Twig\Environment;
 
 final class LeaderboardController extends AbstractController
 {
     public function __construct(
-        private readonly PlayerRepository $playerRepository,
+        private readonly PlayerRepository $playerRepository
     ) {
     }
 
@@ -40,7 +41,7 @@ final class LeaderboardController extends AbstractController
             }
         }
 
-        return self::render('leaderboard.html.twig', [
+        return $this->render('leaderboard.html.twig', [
             'externalPlayers' => $externalPlayers,
             'hasMessageCounts' => $hasMessageCounts,
         ]);
@@ -58,7 +59,7 @@ final class LeaderboardController extends AbstractController
             $ranks[$playerRankInfo->rank->getName()][] = $playerRankInfo;
         }
 
-        return self::render('ranks.html.twig', [
+        return $this->render('ranks.html.twig', [
             'leaderboard' => $ranks,
         ]);
     }
@@ -125,7 +126,7 @@ final class LeaderboardController extends AbstractController
             $chartDay->addDay();
         }
 
-        return self::render('player.html.twig', [
+        return $this->render('player.html.twig', [
             'player' => $player,
             'xpData' => $xpData,
         ]);
