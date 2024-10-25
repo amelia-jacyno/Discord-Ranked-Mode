@@ -1,14 +1,13 @@
 <?php
 
 use App\Controller\LeaderboardController;
+use HaydenPierce\ClassFinder\ClassFinder;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 $routes = new RouteCollection();
 
-$controllers = [
-    LeaderboardController::class
-];
+$controllers = ClassFinder::getClassesInNamespace('App\Controller');
 
 foreach ($controllers as $controller)
 {
