@@ -2,14 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity;
 use App\DTO;
+use App\Entity;
 use App\Repository\PlayerRepository;
 use App\Service\LeaderboardProvider\LeaderboardProviderResolver;
 use App\Service\PlayerRanksResolver;
 use Carbon\Carbon;
 use Doctrine\DBAL\Exception;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\MissingMappingDriverImplementation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,7 +70,6 @@ final class LeaderboardController extends AbstractController
     #[Route('/player/{playerId}', name: 'player')]
     public function player(Request $request): Response
     {
-
         $playerId = $request->get('playerId');
 
         if (null === $playerId) {

@@ -19,7 +19,7 @@ class Twig
         }
 
         $twigLoader = new FilesystemLoader(__DIR__ . '/../View');
-        $twigCache = $_ENV['APP_ENV'] === 'prod' ? __DIR__ . '/../../cache/twig' : false;
+        $twigCache = 'prod' === $_ENV['APP_ENV'] ? __DIR__ . '/../../cache/twig' : false;
 
         static::$twig = new Environment($twigLoader, [
             'cache' => $twigCache,
