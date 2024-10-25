@@ -1,10 +1,10 @@
 <?php
 
-const __ROOT__ = __DIR__;
+const __ROOT__ = __DIR__ . '/..';
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv\Dotenv::createImmutable(__ROOT__);
 $dotenv->load();
 
 Doctrine\DBAL\Types\Type::overrideType('datetime_immutable', \Carbon\Doctrine\CarbonImmutableType::class);

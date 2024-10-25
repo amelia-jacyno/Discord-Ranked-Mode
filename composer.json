@@ -32,6 +32,7 @@
         "symfony/routing": "^7.1",
         "symfony/http-foundation": "^7.1",
         "symfony/cache": "^7.1",
-        "haydenpierce/class-finder": "^0.5.3"
+        "haydenpierce/class-finder": "^0.5.3",
+        "symfony/http-kernel": "^7.1"
     }
 }
