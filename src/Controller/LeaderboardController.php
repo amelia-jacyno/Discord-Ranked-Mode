@@ -13,12 +13,15 @@ use Doctrine\DBAL\Exception;
 use Doctrine\ORM\Exception\MissingMappingDriverImplementation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
 final class LeaderboardController extends AbstractController
 {
     /**
      * @throws \Exception
      */
+    #[Route('/', name: 'home')]
+    #[Route('/leaderboard', name: 'leaderboard')]
     public static function leaderboard(): Response
     {
         $externalPlayers = LeaderboardProviderResolver::resolveProvider($_ENV['LEADERBOARD_PROVIDER'] ?? 'mee6')::fetchPlayers();
@@ -39,6 +42,7 @@ final class LeaderboardController extends AbstractController
         ]);
     }
 
+    #[Route('/ranks', name: 'ranks')]
     public static function ranks(): Response
     {
         $entityManager = EntityManagerProvider::getEntityManager();
@@ -61,6 +65,7 @@ final class LeaderboardController extends AbstractController
      * @throws MissingMappingDriverImplementation
      * @throws Exception
      */
+    #[Route('/player/{playerId}', name: 'player')]
     public static function player(Request $request): Response
     {
 

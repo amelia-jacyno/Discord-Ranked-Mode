@@ -1,24 +1,32 @@
 <?php
 
 use App\Controller\LeaderboardController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 $routes = new RouteCollection();
 
-$routes->add('home', new Route('/', [
-    '_controller' => fn (Request $request) => new RedirectResponse('/leaderboard'),
-]));
-$routes->add('leaderboard', new Route('/leaderboard', [
-    '_controller' => [LeaderboardController::class, 'leaderboard'],
-]));
-$routes->add('ranks', new Route('/ranks', [
-    '_controller' => [LeaderboardController::class, 'ranks'],
-]));
-$routes->add('player', new Route('/player/{playerId}', [
-    '_controller' => [LeaderboardController::class, 'player'],
-]));
+$controllers = [
+    LeaderboardController::class
+];
+
+foreach ($controllers as $controller)
+{
+    $class = new ReflectionClass($controller);
+    $methods = $class->getMethods();
+
+    foreach ($methods as $method)
+    {
+        $routeAttribute = $method->getAttributes(\Symfony\Component\Routing\Attribute\Route::class);
+        foreach ($routeAttribute as $attribute)
+        {
+            /** @var \Symfony\Component\Routing\Attribute\Route $route */
+            $route = $attribute->newInstance();
+            $routes->add($route->getName(), new Route($route->getPath(), [
+                '_controller' => [LeaderboardController::class, $method->getName()],
+            ]));
+        }
+    }
+}
 
 return $routes;
