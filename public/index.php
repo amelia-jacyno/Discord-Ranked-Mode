@@ -8,21 +8,6 @@ use Symfony\Component\Routing\RequestContext;
 
 require_once '../bootstrap.php';
 
-function render_template(Request $request): Response
-{
-    $twigLoader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../src/View');
-    $twigCache = $_ENV['APP_ENV'] === 'prod' ? __DIR__ . '/../cache/twig' : false;
-    $twig = new \Twig\Environment($twigLoader, [
-        'cache' => $twigCache,
-    ]);
-
-    extract($request->attributes->all(), EXTR_SKIP);
-    ob_start();
-    require_once sprintf('/%s/%s.php', __DIR__, $_route);
-
-    return new Response(ob_get_clean());
-}
-
 $routes = require_once '../src/routes.php';
 $request = Request::createFromGlobals();
 
