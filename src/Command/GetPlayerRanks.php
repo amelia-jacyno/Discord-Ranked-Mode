@@ -2,17 +2,17 @@
 
 namespace App\Command;
 
+use App\DTO;
 use App\Repository\PlayerRepository;
 use App\Service\PlayerRanksResolver;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\DTO;
 
 final class GetPlayerRanks extends Command
 {
     public function __construct(
-        private readonly PlayerRepository $playerRepository
+        private readonly PlayerRepository $playerRepository,
     ) {
         parent::__construct();
     }

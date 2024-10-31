@@ -7,7 +7,7 @@ $rules = [
 	],
 ];
 $finder = PhpCsFixer\Finder::create()
-	->in(['bin', 'cli', 'src', 'public']);
+	->in(['bin', 'src', 'config', 'public']);
 
 return (new PhpCsFixer\Config())
 	->setRules($rules)

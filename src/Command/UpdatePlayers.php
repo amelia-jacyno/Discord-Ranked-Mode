@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity;
 use App\Repository\PlayerRepository;
 use App\Service\LeaderboardProvider\LeaderboardProviderResolver;
 use Carbon\Carbon;
@@ -9,13 +10,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Entity;
 
 final class UpdatePlayers extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly PlayerRepository $playerRepository
+        private readonly PlayerRepository $playerRepository,
     ) {
         parent::__construct();
     }
@@ -39,6 +39,7 @@ final class UpdatePlayers extends Command
             // Leave a small margin for inconsistencies in cron timings and command execution
             if (isset($lastUpdate) && $lastUpdate->floatDiffInHours(Carbon::now()) < 11.9) {
                 $output->writeln('Players already updated less than 12 hours ago.');
+
                 return Command::SUCCESS;
             }
         }

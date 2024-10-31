@@ -1,31 +1,30 @@
 <?php
 
-use App\Service\ControllerResolver;
 use App\Service\Kernel;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface;
+use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
 
-require_once '../config/bootstrap.php';
-$container = require '../config/container.php';
-$routes = require '../config/routes.php';
+$container = require_once '../config/bootstrap.php';
 
-$request = Request::createFromGlobals();
+$eventDispatcher = $container->get(EventDispatcherInterface::class);
+$eventDispatcher->addSubscriber($container->get(RouterListener::class));
 
-$matcher = new UrlMatcher($routes, new RequestContext());
+$controllerResolver = $container->get(ControllerResolverInterface::class);
+$argumentResolver = $container->get(ArgumentResolverInterface::class);
+$requestStack = $container->get(RequestStack::class);
 
-$eventDispatcher = new EventDispatcher();
-$eventDispatcher->addSubscriber(new RouterListener($matcher, new RequestStack()));
+$kernel = new Kernel(
+    $eventDispatcher,
+    $controllerResolver,
+    $requestStack,
+    $argumentResolver
+);
 
-$controllerResolver = new ControllerResolver($container);
-$argumentResolver = new ArgumentResolver();
-
-$kernel = new Kernel($eventDispatcher, $controllerResolver, new RequestStack(), $argumentResolver);
-
+$request = $container->get(Request::class);
 $response = $kernel->handle($request);
 $response->send();
 

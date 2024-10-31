@@ -4,8 +4,8 @@
 use HaydenPierce\ClassFinder\ClassFinder;
 use Symfony\Component\Console\Application;
 
-require_once __DIR__ . '/../config/bootstrap.php';
-$container = require __ROOT__ . '/config/container.php';
+
+$container = require_once __DIR__ . '/../config/bootstrap.php';
 
 $application = new Application('Discord Ranked Mode');
 
