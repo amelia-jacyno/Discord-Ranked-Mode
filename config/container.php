@@ -2,25 +2,9 @@
 
 $builder = new DI\ContainerBuilder();
 $builder->addDefinitions([
-    Doctrine\DBAL\Connection::class => function () {
-        return Doctrine\DBAL\DriverManager::getConnection([
-            'driver' => 'pdo_mysql',
-            'host' => 'mysql',
-            'dbname' => $_ENV['DB_DATABASE'],
-            'user' => $_ENV['DB_USER'],
-            'password' => $_ENV['DB_PASSWORD'],
-        ]);
-    },
-    Doctrine\ORM\Configuration::class => function () {
-        return Doctrine\ORM\ORMSetup::createAttributeMetadataConfiguration(
-            paths: [__ROOT__ . '/src/Entity'],
-            isDevMode: 'dev' === $_ENV['APP_ENV'],
-        );
-    },
+    Psr\Container\ContainerInterface::class => DI\get(DI\Container::class),
     'App\Controller\*' => DI\autowire()
         ->method('setContainer', DI\get(Psr\Container\ContainerInterface::class)),
-    Psr\Container\ContainerInterface::class => DI\get(DI\Container::class),
-    Doctrine\ORM\EntityManagerInterface::class => DI\autowire(Doctrine\ORM\EntityManager::class),
     Symfony\Component\EventDispatcher\EventDispatcherInterface::class => DI\autowire(Symfony\Component\EventDispatcher\EventDispatcher::class),
     Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface::class => DI\autowire(Symfony\Component\HttpKernel\Controller\ArgumentResolver::class),
     Symfony\Component\HttpKernel\Controller\ControllerResolverInterface::class => DI\autowire(App\Service\ControllerResolver::class),
