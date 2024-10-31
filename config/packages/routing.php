@@ -9,8 +9,9 @@ $router = new Symfony\Component\Routing\Router($loader, $path);
 
 return [
     Symfony\Component\Routing\RouterInterface::class => $router,
-    Symfony\Component\HttpFoundation\Request::class => DI\create()
-        ->method('createFromGlobals'),
+    Symfony\Component\HttpFoundation\Request::class => function () {
+        return Symfony\Component\HttpFoundation\Request::createFromGlobals();
+    },
     Symfony\Component\HttpKernel\EventListener\RouterListener::class => DI\create()
         ->constructor(DI\get(Symfony\Component\Routing\RouterInterface::class), DI\get(Symfony\Component\HttpFoundation\RequestStack::class)),
 ];
