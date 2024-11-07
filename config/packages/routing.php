@@ -13,5 +13,9 @@ return [
         return Symfony\Component\HttpFoundation\Request::createFromGlobals();
     },
     Symfony\Component\HttpKernel\EventListener\RouterListener::class => DI\create()
-        ->constructor(DI\get(Symfony\Component\Routing\RouterInterface::class), DI\get(Symfony\Component\HttpFoundation\RequestStack::class)),
+        ->constructor(
+            DI\get(Symfony\Component\Routing\RouterInterface::class),
+            DI\get(Symfony\Component\HttpFoundation\RequestStack::class),
+            debug: DI\get('debug'),
+        ),
 ];
