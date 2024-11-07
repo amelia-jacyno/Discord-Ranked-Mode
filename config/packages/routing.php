@@ -8,6 +8,8 @@ $loader = new Symfony\Component\Routing\Loader\AttributeDirectoryLoader(
 $router = new Symfony\Component\Routing\Router($loader, $path);
 
 return [
+    'router' => DI\get(Symfony\Component\Routing\RouterInterface::class),
+    'request' => DI\get(Symfony\Component\HttpFoundation\Request::class),
     Symfony\Component\Routing\RouterInterface::class => $router,
     Symfony\Component\HttpFoundation\Request::class => function () {
         return Symfony\Component\HttpFoundation\Request::createFromGlobals();
