@@ -2,6 +2,8 @@
 
 $builder = new DI\ContainerBuilder();
 $builder->addDefinitions([
+    'env' => $_ENV['APP_ENV'] ?? 'prod',
+    'debug' =>  fn (DI\Container $c) => $c->get('env') === 'dev',
     Psr\Container\ContainerInterface::class => DI\get(DI\Container::class),
     'App\Controller\*' => DI\autowire()
         ->method('setContainer', DI\get(Psr\Container\ContainerInterface::class)),
