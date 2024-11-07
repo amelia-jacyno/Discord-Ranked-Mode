@@ -9,14 +9,17 @@ use App\Service\LeaderboardProvider\LeaderboardProviderResolver;
 use App\Service\PlayerRanksResolver;
 use Carbon\Carbon;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\MissingMappingDriverImplementation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class LeaderboardController extends AbstractController
 {
     public function __construct(
+        private readonly EntityManagerInterface $entityManager,
         private readonly PlayerRepository $playerRepository,
     ) {
     }
@@ -46,10 +49,17 @@ final class LeaderboardController extends AbstractController
         ]);
     }
 
-    #[Route('/ranks', name: 'ranks')]
-    public function ranks(): Response
+    #[Route('{guildId}/ranks', name: 'ranks', requirements: ['guildId' => '\d+'])]
+    public function ranks(string $guildId): Response
     {
-        $players = $this->playerRepository->getPlayersWithAMonthOfSnapshots();
+        $guild = $this->entityManager->getRepository(Entity\Guild::class)->findOneBy(['externalId' => $guildId]);
+
+        if (!$guild)
+        {
+            throw new NotFoundHttpException();
+        }
+
+        $players = $this->playerRepository->getPlayersWithAMonthOfSnapshots($guild);
 
         $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($players);
         /** @var array<string, array<DTO\PlayerRankInfo>> $ranks */

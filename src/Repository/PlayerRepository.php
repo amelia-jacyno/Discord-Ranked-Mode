@@ -21,15 +21,17 @@ final class PlayerRepository extends EntityRepository
     /**
      * @return Entity\Player[]
      */
-    public function getPlayersWithAMonthOfSnapshots(): array
+    public function getPlayersWithAMonthOfSnapshots(Entity\Guild $guild): array
     {
         $qb = $this->createQueryBuilder('p');
 
         return $qb
             ->addSelect('s')
             ->leftJoin('p.snapshots', 's', 'WITH', 's.createdAt >= :monthAgo')
+            ->where('s.guild = :guild')
             ->orderBy('s.createdAt', 'DESC')
             ->setParameter('monthAgo', Carbon::now()->subMonth())
+            ->setParameter('guild', $guild)
             ->getQuery()
             ->getResult();
     }
