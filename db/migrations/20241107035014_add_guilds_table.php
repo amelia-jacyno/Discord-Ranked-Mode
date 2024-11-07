@@ -18,4 +18,9 @@ final class AddGuildsTable extends AbstractMigration
             UNIQUE INDEX external_id_uniq (external_id)
         );");
     }
+
+    public function down(): void
+    {
+        $this->execute("DROP TABLE guilds;");
+    }
 }
