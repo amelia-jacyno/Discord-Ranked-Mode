@@ -64,7 +64,10 @@ final class UpdatePlayers extends Command
 
     private function updateGuildPlayers(Entity\Guild $guild, OutputInterface $output): void
     {
-        $externalPlayers = LeaderboardProviderResolver::resolveProvider($guild->getLeaderboardProvider())::fetchPlayers();
+        $externalPlayers = LeaderboardProviderResolver::resolveProvider($guild->getLeaderboardProvider())::fetchPlayers(
+            $guild->getLeaderboardUrl(),
+            $guild->getLeaderboardProviderAuthToken(),
+        );
 
         foreach ($externalPlayers as $playerData) {
             $player = $this->playerRepository->findOneBy([

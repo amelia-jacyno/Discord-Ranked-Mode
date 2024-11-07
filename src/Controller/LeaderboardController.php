@@ -30,13 +30,17 @@ final class LeaderboardController extends AbstractController
     #[Route('{guildId}/leaderboard', name: 'leaderboard', requirements: ['guildId' => '\d+'])]
     public function leaderboard(string $guildId): Response
     {
+        /** @var Entity\Guild $guild */
         $guild = $this->entityManager->getRepository(Entity\Guild::class)->findOneBy(['externalId' => $guildId]);
 
         if (!$guild || !$guild->getLeaderboardProvider()) {
             throw new NotFoundHttpException();
         }
 
-        $externalPlayers = LeaderboardProviderResolver::resolveProvider($guild->getLeaderboardProvider())::fetchPlayers();
+        $externalPlayers = LeaderboardProviderResolver::resolveProvider($guild->getLeaderboardProvider())::fetchPlayers(
+            $guild->getLeaderboardUrl(),
+            $guild->getLeaderboardProviderAuthToken(),
+        );
         usort($externalPlayers, fn (DTO\ExternalPlayer $p1, DTO\ExternalPlayer $p2) => $p2->xp <=> $p1->xp);
         $externalPlayers = array_slice($externalPlayers, 0, 100);
 

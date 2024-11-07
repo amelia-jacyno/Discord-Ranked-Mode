@@ -13,10 +13,10 @@ final class AmeBotLeaderboardProvider implements LeaderboardProvider
      *
      * @throws GuzzleException
      */
-    public static function fetchPlayers(): array
+    public static function fetchPlayers(string $url, ?string $authToken = null): array
     {
         $client = new Client();
-        $response = $client->get($_ENV['LEADERBOARD_URL']);
+        $response = $client->get($url);
         $decoded = json_decode($response->getBody()->getContents(), true);
         $externalPlayers = [];
         foreach ($decoded as $player) {

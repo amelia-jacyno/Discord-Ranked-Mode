@@ -9,7 +9,7 @@ interface LeaderboardProvider
     /**
      * @return ExternalPlayer[]
      */
-    public static function fetchPlayers(): array;
+    public static function fetchPlayers(string $url, ?string $authToken = null): array;
 
     public static function getProviderName(): string;
 }

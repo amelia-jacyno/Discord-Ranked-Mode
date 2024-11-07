@@ -14,10 +14,10 @@ final class Mee6LeaderboardProvider implements LeaderboardProvider
      *
      * @throws GuzzleException
      */
-    public static function fetchPlayers(): array
+    public static function fetchPlayers(string $url, ?string $authToken = null): array
     {
         $client = new Client();
-        $response = $client->get($_ENV['LEADERBOARD_URL'], [
+        $response = $client->get($url, [
             'query' => [
                 'limit' => 1000,
             ],

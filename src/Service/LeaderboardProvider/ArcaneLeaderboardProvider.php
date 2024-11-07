@@ -14,15 +14,15 @@ final class ArcaneLeaderboardProvider implements LeaderboardProvider
      *
      * @throws GuzzleException
      */
-    public static function fetchPlayers(): array
+    public static function fetchPlayers(string $url, ?string $authToken = null): array
     {
         $client = new Client();
-        $response = $client->get($_ENV['LEADERBOARD_URL'], [
+        $response = $client->get($url, [
             'query' => [
                 'limit' => 1000,
             ],
             'headers' => [
-                'Authorization' => $_ENV['LEADERBOARD_AUTH'],
+                'Authorization' => $authToken,
             ],
         ]);
         $decoded = json_decode($response->getBody()->getContents(), true);
