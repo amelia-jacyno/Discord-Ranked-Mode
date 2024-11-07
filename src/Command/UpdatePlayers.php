@@ -39,8 +39,7 @@ final class UpdatePlayers extends Command
         $guilds = array_filter($guilds, fn (Entity\Guild $guild) => $guild->getLeaderboardUrl() && $guild->getLeaderboardProvider());
 
         $updatedGuilds = [];
-        foreach ($guilds as $guild)
-        {
+        foreach ($guilds as $guild) {
             $lastUpdate = $this->playerRepository->getLastPlayerSnapshotUpdate($guild);
 
             // Leave a margin for inconsistencies in cron timings and command execution for multiple guilds

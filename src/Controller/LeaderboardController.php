@@ -11,7 +11,6 @@ use Carbon\Carbon;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\MissingMappingDriverImplementation;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,8 +32,7 @@ final class LeaderboardController extends AbstractController
     {
         $guild = $this->entityManager->getRepository(Entity\Guild::class)->findOneBy(['externalId' => $guildId]);
 
-        if (!$guild || !$guild->getLeaderboardProvider())
-        {
+        if (!$guild || !$guild->getLeaderboardProvider()) {
             throw new NotFoundHttpException();
         }
 
@@ -61,8 +59,7 @@ final class LeaderboardController extends AbstractController
     {
         $guild = $this->entityManager->getRepository(Entity\Guild::class)->findOneBy(['externalId' => $guildId]);
 
-        if (!$guild)
-        {
+        if (!$guild) {
             throw new NotFoundHttpException();
         }
 
@@ -92,8 +89,7 @@ final class LeaderboardController extends AbstractController
         /** @var Entity\Player $player */
         $player = $this->playerRepository->findOneBy(['externalId' => $playerId]);
 
-        if (!$guild || !$player)
-        {
+        if (!$guild || !$player) {
             throw new NotFoundHttpException();
         }
 
