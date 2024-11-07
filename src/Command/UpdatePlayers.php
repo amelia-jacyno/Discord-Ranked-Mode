@@ -34,20 +34,42 @@ final class UpdatePlayers extends Command
             $output->writeln('Force update enabled.');
         }
 
-        if (!$force) {
-            $lastUpdate = $this->playerRepository->getLastPlayerSnapshotUpdate();
-            // Leave a small margin for inconsistencies in cron timings and command execution
-            if (isset($lastUpdate) && $lastUpdate->floatDiffInHours(Carbon::now()) < 11.9) {
-                $output->writeln('Players already updated less than 12 hours ago.');
+        /** @var Entity\Guild[] $guilds */
+        $guilds = $this->entityManager->getRepository(Entity\Guild::class)->findAll();
+        $guilds = array_filter($guilds, fn (Entity\Guild $guild) => $guild->getLeaderboardUrl() && $guild->getLeaderboardProvider());
 
-                return Command::SUCCESS;
+        $updatedGuilds = [];
+        foreach ($guilds as $guild) {
+            $lastUpdate = $this->playerRepository->getLastPlayerSnapshotUpdate($guild);
+
+            // Leave a margin for inconsistencies in cron timings and command execution for multiple guilds
+            if (!$force && isset($lastUpdate) && $lastUpdate->floatDiffInHours(Carbon::now()) < 11.5) {
+                $output->writeln(sprintf(
+                    'Skipping guild %s (%s) as it was updated less than 12 hours ago.',
+                    $guild->getName(),
+                    $guild->getExternalId()
+                ));
+
+                continue;
             }
+
+            $this->updateGuildPlayers($guild, $output);
+            $updatedGuilds[] = $guild;
         }
 
-        $externalPlayers = LeaderboardProviderResolver::resolveProvider($_ENV['LEADERBOARD_PROVIDER'] ?? 'mee6')::fetchPlayers();
+        $output->writeln(sprintf('Updated %d guilds.', count($updatedGuilds)));
+
+        return Command::SUCCESS;
+    }
+
+    private function updateGuildPlayers(Entity\Guild $guild, OutputInterface $output): void
+    {
+        $externalPlayers = LeaderboardProviderResolver::resolveProvider($guild->getLeaderboardProvider())::fetchPlayers();
 
         foreach ($externalPlayers as $playerData) {
-            $player = $this->playerRepository->findOneBy(['externalId' => $playerData->id]);
+            $player = $this->playerRepository->findOneBy([
+                'externalId' => $playerData->id,
+            ]);
 
             if (null === $player) {
                 $player = (new Entity\Player())
@@ -63,12 +85,17 @@ final class UpdatePlayers extends Command
                 ->setLevel($playerData->level)
                 ->setXp($playerData->xp)
                 ->setMessageCount($playerData->messageCount ?? 0)
-                ->setPlayer($player);
+                ->setPlayer($player)
+                ->setGuild($guild);
             $player->addSnapshot($snapshot);
         }
         $this->entityManager->flush();
-        $output->writeln('Players updated successfully.');
 
-        return Command::SUCCESS;
+        $output->writeln(sprintf(
+            'Updated %d players for guild %s (%s)',
+            count($externalPlayers),
+            $guild->getName(),
+            $guild->getExternalId()
+        ));
     }
 }

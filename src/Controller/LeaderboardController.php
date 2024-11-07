@@ -9,14 +9,16 @@ use App\Service\LeaderboardProvider\LeaderboardProviderResolver;
 use App\Service\PlayerRanksResolver;
 use Carbon\Carbon;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\MissingMappingDriverImplementation;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class LeaderboardController extends AbstractController
 {
     public function __construct(
+        private readonly EntityManagerInterface $entityManager,
         private readonly PlayerRepository $playerRepository,
     ) {
     }
@@ -24,11 +26,17 @@ final class LeaderboardController extends AbstractController
     /**
      * @throws \Exception
      */
-    #[Route('/', name: 'home')]
-    #[Route('/leaderboard', name: 'leaderboard')]
-    public function leaderboard(): Response
+    #[Route('/{guildId}', name: 'home', requirements: ['guildId' => '\d+'])]
+    #[Route('{guildId}/leaderboard', name: 'leaderboard', requirements: ['guildId' => '\d+'])]
+    public function leaderboard(string $guildId): Response
     {
-        $externalPlayers = LeaderboardProviderResolver::resolveProvider($_ENV['LEADERBOARD_PROVIDER'] ?? 'mee6')::fetchPlayers();
+        $guild = $this->entityManager->getRepository(Entity\Guild::class)->findOneBy(['externalId' => $guildId]);
+
+        if (!$guild || !$guild->getLeaderboardProvider()) {
+            throw new NotFoundHttpException();
+        }
+
+        $externalPlayers = LeaderboardProviderResolver::resolveProvider($guild->getLeaderboardProvider())::fetchPlayers();
         usort($externalPlayers, fn (DTO\ExternalPlayer $p1, DTO\ExternalPlayer $p2) => $p2->xp <=> $p1->xp);
         $externalPlayers = array_slice($externalPlayers, 0, 100);
 
@@ -46,10 +54,16 @@ final class LeaderboardController extends AbstractController
         ]);
     }
 
-    #[Route('/ranks', name: 'ranks')]
-    public function ranks(): Response
+    #[Route('{guildId}/ranks', name: 'ranks', requirements: ['guildId' => '\d+'])]
+    public function ranks(string $guildId): Response
     {
-        $players = $this->playerRepository->getPlayersWithAMonthOfSnapshots();
+        $guild = $this->entityManager->getRepository(Entity\Guild::class)->findOneBy(['externalId' => $guildId]);
+
+        if (!$guild) {
+            throw new NotFoundHttpException();
+        }
+
+        $players = $this->playerRepository->getPlayersWithAMonthOfSnapshots($guild);
 
         $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($players);
         /** @var array<string, array<DTO\PlayerRankInfo>> $ranks */
@@ -67,27 +81,21 @@ final class LeaderboardController extends AbstractController
      * @throws MissingMappingDriverImplementation
      * @throws Exception
      */
-    #[Route('/player/{playerId}', name: 'player')]
-    public function player(Request $request): Response
+    #[Route('{guildId}/player/{playerId}', name: 'player', requirements: ['guildId' => '\d+', 'playerId' => '\d+'])]
+    public function player(string $guildId, string $playerId): Response
     {
-        $playerId = $request->get('playerId');
-
-        if (null === $playerId) {
-            header('Location: /');
-            exit;
-        }
+        $guild = $this->entityManager->getRepository(Entity\Guild::class)->findOneBy(['externalId' => $guildId]);
 
         /** @var Entity\Player $player */
-        $player = $this->playerRepository->find($playerId);
+        $player = $this->playerRepository->findOneBy(['externalId' => $playerId]);
 
-        if (null === $player) {
-            header('Location: /');
-            exit;
+        if (!$guild || !$player) {
+            throw new NotFoundHttpException();
         }
 
         $playerSnapshots = $player->getSnapshots();
-        $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) {
-            return $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays(7));
+        $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) use ($guild) {
+            return $snapshot->getGuild() === $guild && $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays(7));
         });
 
         $snapshotDays = [];

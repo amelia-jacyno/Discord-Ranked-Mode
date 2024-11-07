@@ -21,15 +21,17 @@ final class PlayerRepository extends EntityRepository
     /**
      * @return Entity\Player[]
      */
-    public function getPlayersWithAMonthOfSnapshots(): array
+    public function getPlayersWithAMonthOfSnapshots(Entity\Guild $guild): array
     {
         $qb = $this->createQueryBuilder('p');
 
         return $qb
             ->addSelect('s')
             ->leftJoin('p.snapshots', 's', 'WITH', 's.createdAt >= :monthAgo')
+            ->where('s.guild = :guild')
             ->orderBy('s.createdAt', 'DESC')
             ->setParameter('monthAgo', Carbon::now()->subMonth())
+            ->setParameter('guild', $guild)
             ->getQuery()
             ->getResult();
     }
@@ -38,12 +40,14 @@ final class PlayerRepository extends EntityRepository
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function getLastPlayerSnapshotUpdate(): ?CarbonInterface
+    public function getLastPlayerSnapshotUpdate(Entity\Guild $guild): ?CarbonInterface
     {
         $qb = $this->createQueryBuilder('p');
         $result = $qb
             ->select('MAX(s.createdAt)')
             ->leftJoin('p.snapshots', 's')
+            ->where('s.guild = :guild')
+            ->setParameter('guild', $guild)
             ->getQuery()
             ->getSingleScalarResult();
 

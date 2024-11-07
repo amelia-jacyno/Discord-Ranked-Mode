@@ -12,5 +12,7 @@ return [
     Twig\Loader\FilesystemLoader::class => DI\create()
         ->constructor(DI\get('twig.paths')),
     Twig\Environment::class => DI\create()
-        ->constructor(DI\get('twig.loader'), DI\get('twig.options')),
+        ->constructor(DI\get('twig.loader'), DI\get('twig.options'))
+        ->method('addGlobal', 'router', DI\get('router'))
+        ->method('addGlobal', 'request', DI\get('request')),
 ];

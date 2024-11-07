@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'player_snapshots')]
+#[ORM\Index(columns: ['player_id'], name: 'player_id_idx')]
+#[ORM\Index(columns: ['guild_id'], name: 'guild_id_idx')]
 class PlayerSnapshot
 {
     #[ORM\Id]
@@ -18,6 +20,9 @@ class PlayerSnapshot
     #[ORM\ManyToOne(targetEntity: Player::class, inversedBy: 'snapshots')]
     private Player $player;
 
+    #[ORM\ManyToOne(targetEntity: Guild::class)]
+    private Guild $guild;
+
     #[ORM\Column(name: 'xp', type: 'integer')]
     private int $xp;
 
@@ -27,7 +32,7 @@ class PlayerSnapshot
     #[ORM\Column(name: 'message_count', type: 'integer', nullable: true)]
     private ?int $messageCount;
 
-    #[ORM\Column(name: 'created_at', type: 'datetime', options: ['default' => 'NOW'])]
+    #[ORM\Column(name: 'created_at', type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private CarbonInterface $createdAt;
 
     public function __construct()
@@ -48,6 +53,18 @@ class PlayerSnapshot
     public function setPlayer(Player $player): self
     {
         $this->player = $player;
+
+        return $this;
+    }
+
+    public function getGuild(): Guild
+    {
+        return $this->guild;
+    }
+
+    public function setGuild(Guild $guild): self
+    {
+        $this->guild = $guild;
 
         return $this;
     }
