@@ -84,27 +84,22 @@ final class LeaderboardController extends AbstractController
      * @throws MissingMappingDriverImplementation
      * @throws Exception
      */
-    #[Route('/player/{playerId}', name: 'player')]
-    public function player(Request $request): Response
+    #[Route('{guildId}/player/{playerId}', name: 'player', requirements: ['guildId' => '\d+', 'playerId' => '\d+'])]
+    public function player(string $guildId, string $playerId): Response
     {
-        $playerId = $request->get('playerId');
-
-        if (null === $playerId) {
-            header('Location: /');
-            exit;
-        }
+        $guild = $this->entityManager->getRepository(Entity\Guild::class)->findOneBy(['externalId' => $guildId]);
 
         /** @var Entity\Player $player */
-        $player = $this->playerRepository->find($playerId);
+        $player = $this->playerRepository->findOneBy(['externalId' => $playerId]);
 
-        if (null === $player) {
-            header('Location: /');
-            exit;
+        if (!$guild || !$player)
+        {
+            throw new NotFoundHttpException();
         }
 
         $playerSnapshots = $player->getSnapshots();
-        $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) {
-            return $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays(7));
+        $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) use ($guild) {
+            return $snapshot->getGuild() === $guild && $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays(7));
         });
 
         $snapshotDays = [];
