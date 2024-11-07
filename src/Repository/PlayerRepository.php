@@ -38,12 +38,14 @@ final class PlayerRepository extends EntityRepository
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function getLastPlayerSnapshotUpdate(): ?CarbonInterface
+    public function getLastPlayerSnapshotUpdate(Entity\Guild $guild): ?CarbonInterface
     {
         $qb = $this->createQueryBuilder('p');
         $result = $qb
             ->select('MAX(s.createdAt)')
             ->leftJoin('p.snapshots', 's')
+            ->where('s.guild = :guild')
+            ->setParameter('guild', $guild)
             ->getQuery()
             ->getSingleScalarResult();
 
