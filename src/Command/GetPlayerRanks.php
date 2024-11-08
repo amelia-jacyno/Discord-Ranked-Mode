@@ -39,8 +39,8 @@ final class GetPlayerRanks extends Command
             return Command::FAILURE;
         }
 
-        $players = $this->playerRepository->getPlayersWithAMonthOfSnapshots($guild);
-        $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($players);
+        $playersData = $this->playerRepository->getPlayersWithSnapshotData($guild);
+        $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($playersData);
         /** @var array<string, array<DTO\PlayerRankInfo>> $ranks */
         $ranks = [];
         foreach ($playerRankInfos as $playerRankInfo) {

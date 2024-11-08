@@ -5,6 +5,7 @@ namespace App\Service;
 use App\DTO;
 use App\Entity;
 use App\Enum;
+use App\Helper\DiscordAvatarHelper;
 use Carbon\Carbon;
 
 final class PlayerRanksResolver
@@ -28,28 +29,32 @@ final class PlayerRanksResolver
     ];
 
     /**
-     * @param Entity\Player[] $players
+     * @param DTO\PlayerWithSnapshotData[] $playersData
      *
      * @return DTO\PlayerRankInfo[]
      */
-    public static function resolvePlayerRanks(array $players): array
+    public static function resolvePlayerRanks(array $playersData): array
     {
-        $players = self::sortEligiblePlayersByDailyXp($players);
-        $playerCount = count($players);
+        $playersData = self::filterEligiblePlayers($playersData);
+        $playersData = self::sortPlayersByDailyXp($playersData);
+        $playerCount = count($playersData);
 
         $playerRankInfos = [];
         $offset = 0;
         foreach (self::$standardRankDistribution as $rankId => $distribution) {
             $currentRankPlayerCount = (int) round($distribution * $playerCount);
-            $currentRankPlayers = array_slice($players, $offset, $currentRankPlayerCount);
-            foreach ($currentRankPlayers as $player) {
+            $currentRankPlayersData = array_slice($playersData, $offset, $currentRankPlayerCount);
+            foreach ($currentRankPlayersData as $playerData) {
+                $avatarUrl = filter_var($playerData->avatar, FILTER_VALIDATE_URL)
+                    ? $playerData->avatar
+                    : DiscordAvatarHelper::resolveAvatarUrl($playerData->externalId, $playerData->avatar);
                 $playerRankInfos[] = new DTO\PlayerRankInfo(
-                    $player->getId(),
-                    $player->getAvatar(),
-                    $player->getUsername(),
-                    $player->getExternalId(),
+                    $playerData->id,
+                    $avatarUrl,
+                    $playerData->username,
+                    $playerData->externalId,
                     self::$ranks[$rankId],
-                    self::calculateDailyXp($player)
+                    self::calculateDailyXp($playerData)
                 );
             }
 
@@ -59,53 +64,46 @@ final class PlayerRanksResolver
         return $playerRankInfos;
     }
 
-    /**
-     * @param Entity\Player[] $players
-     *
-     * @return Entity\Player[]
-     */
-    private static function sortEligiblePlayersByDailyXp(array $players): array
+    private static function filterEligiblePlayers(array $playersData): array
     {
-        // Filter out players with less than 7 days of snapshots and latest snapshot older than 3 days
-        $players = array_filter($players, function (Entity\Player $player) {
-            if ($player->getSnapshots()->count() < 2) {
+        return array_filter($playersData, function (DTO\PlayerWithSnapshotData $playerData) {
+            if ($playerData->newestSnapshotDate->diffInDays($playerData->oldestSnapshotDate) < 6) {
                 return false;
             }
 
-            $newestSnapshot = $player->getSnapshots()->first();
-            $oldestSnapshot = $player->getSnapshots()->last();
-            if ($newestSnapshot->getCreatedAt()->diffInDays($oldestSnapshot->getCreatedAt()) < 6) {
+            if ($playerData->newestSnapshotDate->diffInDays(Carbon::now()) > 3) {
                 return false;
             }
 
-            if ($newestSnapshot->getCreatedAt()->diffInDays(Carbon::now()) > 3) {
-                return false;
-            }
-
-            if ($newestSnapshot->getXp() === $oldestSnapshot->getXp()) {
+            if ($playerData->newestSnapshotXp === $playerData->oldestSnapshotXp) {
                 return false;
             }
 
             return true;
         });
+    }
 
-        usort($players, function (Entity\Player $a, Entity\Player $b) {
+    /**
+     * @param DTO\PlayerWithSnapshotData[] $playersData
+     *
+     * @return Entity\Player[]
+     */
+    private static function sortPlayersByDailyXp(array $playersData): array
+    {
+        usort($playersData, function (DTO\PlayerWithSnapshotData $a, DTO\PlayerWithSnapshotData $b) {
             $aDailyXp = self::calculateDailyXp($a);
             $bDailyXp = self::calculateDailyXp($b);
 
             return $bDailyXp <=> $aDailyXp;
         });
 
-        return $players;
+        return $playersData;
     }
 
-    private static function calculateDailyXp(Entity\Player $player): float
+    private static function calculateDailyXp(DTO\PlayerWithSnapshotData $playerData): float
     {
-        $snapshots = $player->getSnapshots();
-        $oldestSnapshot = $snapshots->last();
-        $newestSnapshot = $snapshots->first();
-        $daysBetweenSnapshots = $newestSnapshot->getCreatedAt()->diffInDays($oldestSnapshot->getCreatedAt());
-        $xpDifference = $newestSnapshot->getXp() - $oldestSnapshot->getXp();
+        $daysBetweenSnapshots = $playerData->newestSnapshotDate->diffInDays($playerData->oldestSnapshotDate);
+        $xpDifference = $playerData->newestSnapshotXp - $playerData->oldestSnapshotXp;
 
         return $xpDifference / $daysBetweenSnapshots;
     }
