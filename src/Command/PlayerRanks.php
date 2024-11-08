@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class GetPlayerRanks extends Command
+final class PlayerRanks extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -23,7 +23,7 @@ final class GetPlayerRanks extends Command
 
     protected function configure(): void
     {
-        $this->setName('get_player_ranks')
+        $this->setName('player:ranks')
             ->setDescription('Get player ranks')
             ->addArgument('guild_id', InputArgument::REQUIRED, 'The guild ID to get player ranks for');
     }
