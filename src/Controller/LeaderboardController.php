@@ -97,9 +97,9 @@ final class LeaderboardController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $playerSnapshots = $player->getSnapshots();
-        $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) use ($guild) {
-            return $snapshot->getGuild() === $guild && $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays(7));
+        $playerSnapshots = $player->getSnapshots($guild);
+        $playerSnapshots = $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) use ($guild) {
+            return $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays(7));
         });
 
         $snapshotDays = [];
