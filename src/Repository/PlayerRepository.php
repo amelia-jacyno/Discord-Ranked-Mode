@@ -30,60 +30,68 @@ final class PlayerRepository extends EntityRepository
                 p.username,
                 p.avatar,
                 p.external_id,
-                ps_oldest.xp AS oldest_snapshot_xp,
-                ps_oldest.level AS oldest_snapshot_level,
-                ps_oldest.created_at AS oldest_snapshot_date,
-                ps_newest.xp AS newest_snapshot_xp,
-                ps_newest.level AS newest_snapshot_level,
-                ps_newest.created_at AS newest_snapshot_date
+                ps.xp AS snapshot_xp,
+                ps.level AS snapshot_level,
+                ps.created_at AS snapshot_date
             FROM 
                 players p
             INNER JOIN 
-                player_snapshots ps_oldest ON p.id = ps_oldest.player_id AND ps_oldest.created_at = (
-                    SELECT 
-                        MIN(created_at)
-                    FROM 
-                        player_snapshots ps
-                    WHERE 
-                        ps.player_id = p.id
-                        AND ps.guild_id = :guildId
-                        AND ps.created_at >= :oldestSnapshotDate
-                )
-            INNER JOIN
-                player_snapshots ps_newest ON p.id = ps_newest.player_id AND ps_newest.created_at = (
-                    SELECT 
-                        MAX(created_at)
-                    FROM 
-                        player_snapshots ps
-                    WHERE 
-                        ps.player_id = p.id
-                        AND ps.guild_id = :guildId
-                        AND ps.created_at <= :newestSnapshotDate
-                )
+                player_snapshots ps
+                ON p.id = ps.player_id
+            WHERE
+                ps.guild_id = :guildId
+                AND ps.created_at >= :oldestSnapshotDate
+            ORDER BY
+                p.id,
+                ps.created_at
         ";
         try
         {
             $result = $this->getEntityManager()->getConnection()->executeQuery($sql, [
                 'guildId' => $guild->getId(),
                 'oldestSnapshotDate' => Carbon::now()->subDays(30)->format('Y-m-d H:i:s'),
-                'newestSnapshotDate' => Carbon::now()->format('Y-m-d H:i:s'),
             ]);
 
+            $playerData = null;
+            $oldestSnapshotData = null;
+            $newestSnapshotData = null;
             $playersWithSnapshotData = [];
             foreach ($result->iterateAssociative() as $row)
             {
-                $playersWithSnapshotData[] = new DTO\PlayerWithSnapshotData(
-                    $row['id'],
-                    $row['username'],
-                    $row['avatar'],
-                    $row['external_id'],
-                    $row['oldest_snapshot_xp'],
-                    $row['oldest_snapshot_level'],
-                    new Carbon($row['oldest_snapshot_date']),
-                    $row['newest_snapshot_xp'],
-                    $row['newest_snapshot_level'],
-                    new Carbon($row['newest_snapshot_date'])
-                );
+                if ($playerData === null || $playerData['id'] !== $row['id'])
+                {
+                    if ($playerData !== null && $oldestSnapshotData !== null && $newestSnapshotData !== null)
+                    {
+                        $playersWithSnapshotData[] = new DTO\PlayerWithSnapshotData(
+                            $playerData['id'],
+                            $playerData['username'],
+                            $playerData['avatar'],
+                            $playerData['external_id'],
+                            $oldestSnapshotData['xp'],
+                            $oldestSnapshotData['level'],
+                            new Carbon($oldestSnapshotData['date']),
+                            $newestSnapshotData['xp'],
+                            $newestSnapshotData['level'],
+                            new Carbon($newestSnapshotData['date'])
+                        );
+                    }
+
+                    $playerData = $row;
+                    $oldestSnapshotData = [
+                        'xp' => $row['snapshot_xp'],
+                        'level' => $row['snapshot_level'],
+                        'date' => $row['snapshot_date'],
+                    ];
+                    $newestSnapshotData = null;
+
+                    continue;
+                }
+
+                $newestSnapshotData = [
+                    'xp' => $row['snapshot_xp'],
+                    'level' => $row['snapshot_level'],
+                    'date' => $row['snapshot_date'],
+                ];
             }
 
             return $playersWithSnapshotData;
