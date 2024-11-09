@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DTO;
 use App\Entity;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -19,21 +20,86 @@ final class PlayerRepository extends EntityRepository
     }
 
     /**
-     * @return Entity\Player[]
+     * @return DTO\PlayerWithSnapshotData[]
      */
-    public function getPlayersWithAMonthOfSnapshots(Entity\Guild $guild): array
+    public function getPlayersWithSnapshotData(Entity\Guild $guild): array
     {
-        $qb = $this->createQueryBuilder('p');
+        $sql = "
+            SELECT
+                p.id,
+                p.username,
+                p.avatar,
+                p.external_id,
+                ps.xp AS snapshot_xp,
+                ps.level AS snapshot_level,
+                ps.created_at AS snapshot_date
+            FROM 
+                players p
+            INNER JOIN 
+                player_snapshots ps
+                ON p.id = ps.player_id
+            WHERE
+                ps.guild_id = :guildId
+                AND ps.created_at >= :oldestSnapshotDate
+            ORDER BY
+                p.id,
+                ps.created_at
+        ";
+        try
+        {
+            $result = $this->getEntityManager()->getConnection()->executeQuery($sql, [
+                'guildId' => $guild->getId(),
+                'oldestSnapshotDate' => Carbon::now()->subDays(30)->format('Y-m-d H:i:s'),
+            ]);
 
-        return $qb
-            ->addSelect('s')
-            ->leftJoin('p.snapshots', 's', 'WITH', 's.createdAt >= :monthAgo')
-            ->where('s.guild = :guild')
-            ->orderBy('s.createdAt', 'DESC')
-            ->setParameter('monthAgo', Carbon::now()->subMonth())
-            ->setParameter('guild', $guild)
-            ->getQuery()
-            ->getResult();
+            $playerData = null;
+            $oldestSnapshotData = null;
+            $newestSnapshotData = null;
+            $playersWithSnapshotData = [];
+            foreach ($result->iterateAssociative() as $row)
+            {
+                if ($playerData === null || $playerData['id'] !== $row['id'])
+                {
+                    if ($playerData !== null && $oldestSnapshotData !== null && $newestSnapshotData !== null)
+                    {
+                        $playersWithSnapshotData[] = new DTO\PlayerWithSnapshotData(
+                            $playerData['id'],
+                            $playerData['username'],
+                            $playerData['avatar'],
+                            $playerData['external_id'],
+                            $oldestSnapshotData['xp'],
+                            $oldestSnapshotData['level'],
+                            new Carbon($oldestSnapshotData['date']),
+                            $newestSnapshotData['xp'],
+                            $newestSnapshotData['level'],
+                            new Carbon($newestSnapshotData['date'])
+                        );
+                    }
+
+                    $playerData = $row;
+                    $oldestSnapshotData = [
+                        'xp' => $row['snapshot_xp'],
+                        'level' => $row['snapshot_level'],
+                        'date' => $row['snapshot_date'],
+                    ];
+                    $newestSnapshotData = null;
+
+                    continue;
+                }
+
+                $newestSnapshotData = [
+                    'xp' => $row['snapshot_xp'],
+                    'level' => $row['snapshot_level'],
+                    'date' => $row['snapshot_date'],
+                ];
+            }
+
+            return $playersWithSnapshotData;
+        }
+        catch (\Exception $e)
+        {
+            throw new \RuntimeException('Failed to get player snapshot data.', 0, $e);
+        }
     }
 
     /**

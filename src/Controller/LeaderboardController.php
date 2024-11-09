@@ -67,9 +67,9 @@ final class LeaderboardController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $players = $this->playerRepository->getPlayersWithAMonthOfSnapshots($guild);
+        $playersData = $this->playerRepository->getPlayersWithSnapshotData($guild);
 
-        $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($players);
+        $playerRankInfos = PlayerRanksResolver::resolvePlayerRanks($playersData);
         /** @var array<string, array<DTO\PlayerRankInfo>> $ranks */
         $ranks = [];
         foreach ($playerRankInfos as $playerRankInfo) {
