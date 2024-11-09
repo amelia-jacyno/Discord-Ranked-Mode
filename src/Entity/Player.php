@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Helper\DiscordAvatarHelper;
 use App\Repository\PlayerRepository;
+use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -69,9 +70,15 @@ class Player implements \JsonSerializable
     /**
      * @return Collection<int, PlayerSnapshot>
      */
-    public function getSnapshots(): Collection
+    public function getSnapshots(?Guild $guild = null): Collection
     {
-        return $this->snapshots;
+        if (!$guild) {
+            return $this->snapshots;
+        }
+
+        return $this->snapshots->filter(
+            fn (PlayerSnapshot $snapshot) => $snapshot->getGuild() === $guild
+        );
     }
 
     public function addSnapshot(PlayerSnapshot $snapshot): self
