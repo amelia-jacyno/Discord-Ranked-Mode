@@ -16,7 +16,7 @@ class PlayerWithSnapshotData
         public CarbonInterface $oldestSnapshotDate,
         public int $newestSnapshotXp,
         public int $newestSnapshotLevel,
-        public CarbonInterface $newestSnapshotDate
+        public CarbonInterface $newestSnapshotDate,
     ) {
     }
 }

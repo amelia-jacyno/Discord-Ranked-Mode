@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Helper\DiscordAvatarHelper;
 use App\Repository\PlayerRepository;
-use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

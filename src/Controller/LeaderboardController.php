@@ -99,7 +99,7 @@ final class LeaderboardController extends AbstractController
 
         $daysOnChart = 7;
         $playerSnapshots = $player->getSnapshots($guild);
-        $playerSnapshots = $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) use ($guild, $daysOnChart) {
+        $playerSnapshots = $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) use ($daysOnChart) {
             return $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays($daysOnChart + 1));
         });
 

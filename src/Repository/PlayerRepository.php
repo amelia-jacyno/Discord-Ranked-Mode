@@ -24,7 +24,7 @@ final class PlayerRepository extends EntityRepository
      */
     public function getPlayersWithSnapshotData(Entity\Guild $guild): array
     {
-        $sql = "
+        $sql = '
             SELECT
                 p.id,
                 p.username,
@@ -44,9 +44,8 @@ final class PlayerRepository extends EntityRepository
             ORDER BY
                 p.id,
                 ps.created_at
-        ";
-        try
-        {
+        ';
+        try {
             $result = $this->getEntityManager()->getConnection()->executeQuery($sql, [
                 'guildId' => $guild->getId(),
                 'oldestSnapshotDate' => Carbon::now()->subDays(30)->format('Y-m-d H:i:s'),
@@ -56,12 +55,9 @@ final class PlayerRepository extends EntityRepository
             $oldestSnapshotData = null;
             $newestSnapshotData = null;
             $playersWithSnapshotData = [];
-            foreach ($result->iterateAssociative() as $row)
-            {
-                if ($playerData === null || $playerData['id'] !== $row['id'])
-                {
-                    if ($playerData !== null && $oldestSnapshotData !== null && $newestSnapshotData !== null)
-                    {
+            foreach ($result->iterateAssociative() as $row) {
+                if (null === $playerData || $playerData['id'] !== $row['id']) {
+                    if (null !== $playerData && null !== $oldestSnapshotData && null !== $newestSnapshotData) {
                         $playersWithSnapshotData[] = new DTO\PlayerWithSnapshotData(
                             $playerData['id'],
                             $playerData['username'],
@@ -95,9 +91,7 @@ final class PlayerRepository extends EntityRepository
             }
 
             return $playersWithSnapshotData;
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             throw new \RuntimeException('Failed to get player snapshot data.', 0, $e);
         }
     }
