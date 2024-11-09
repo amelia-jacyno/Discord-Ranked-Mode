@@ -14,7 +14,8 @@
     ],
     "require-dev": {
         "larapack/dd": "^1.1",
-        "friendsofphp/php-cs-fixer": "^3.14"
+        "friendsofphp/php-cs-fixer": "^3.14",
+        "brainmaestro/composer-git-hooks": "^3.0"
     },
     "require": {
         "php": "8.3.*",
@@ -37,5 +38,15 @@
         "symfony/console": "^7.1",
         "symfony/finder": "^7.1",
         "haydenpierce/class-finder": "^0.5.3"
+    },
+    "scripts": {
+        "cghooks": "vendor/bin/cghooks"
+    },
+    "extra": {
+        "hooks": {
+            "pre-commit": [
+                "scripts/php-cs-fixer.sh"
+            ]
+        }
     }
 }

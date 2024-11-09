@@ -17,6 +17,8 @@ RUN touch /var/log/cron.log
 FROM base AS dev
 WORKDIR /app
 
+RUN apt-get update && apt-get -y install git unzip
+
 FROM base AS prod
 WORKDIR /app
 
