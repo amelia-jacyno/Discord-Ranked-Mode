@@ -97,20 +97,23 @@ final class LeaderboardController extends AbstractController
             throw new NotFoundHttpException();
         }
 
+        $daysOnChart = 7;
         $playerSnapshots = $player->getSnapshots($guild);
-        $playerSnapshots = $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) use ($guild) {
-            return $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays(7));
+        $playerSnapshots = $playerSnapshots->filter(function (Entity\PlayerSnapshot $snapshot) use ($guild, $daysOnChart) {
+            return $snapshot->getCreatedAt()->isAfter(Carbon::now()->subDays($daysOnChart + 1));
         });
 
         $snapshotDays = [];
         foreach ($playerSnapshots as $snapshot) {
-            $snapshotDays[$snapshot->getCreatedAt()->format('Y-m-d')] = $snapshot;
+            // Midnight snapshot represents data for the previous day
+            $snapshotDays[$snapshot->getCreatedAt()->subHour()->format('Y-m-d')] = $snapshot;
         }
 
         $xpData = [];
-        $chartDay = Carbon::now()->subDays(7);
-        $previousXp = null;
-        while ($chartDay->isBefore(Carbon::now())) {
+        $chartDay = Carbon::now()->subDays($daysOnChart);
+        $previousSnapshot = $snapshotDays[$chartDay->copy()->subDay()->format('Y-m-d')] ?? null;
+        $previousXp = $previousSnapshot?->getXp();
+        while ($chartDay->isBefore(Carbon::now()->subDay())) {
             $snapshot = $snapshotDays[$chartDay->format('Y-m-d')] ?? null;
             if (null === $snapshot) {
                 $xpData[] = [
@@ -122,15 +125,9 @@ final class LeaderboardController extends AbstractController
                 continue;
             }
 
-            if (null === $previousXp) {
-                $previousXp = $snapshot->getXp();
-
-                continue;
-            }
-
             $xpData[] = [
                 'date' => $snapshot->getCreatedAt()->format('Y-m-d'),
-                'xp' => $snapshot->getXp() - $previousXp,
+                'xp' => $previousXp ? $snapshot->getXp() - $previousXp : null,
             ];
             $previousXp = $snapshot->getXp();
 
