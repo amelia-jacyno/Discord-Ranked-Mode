@@ -1,7 +1,9 @@
 #!/bin/bash
 
 mkdir cache
-chown -R www-data:www-data cache
+chown www-data:www-data cache
+
+bin/doctrine orm:generate:proxies cache/doctrine/proxies
 
 vendor/bin/phinx migrate
 
